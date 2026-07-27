@@ -10,9 +10,9 @@ const router = createRouter({
   routes: [
     { path: '/', redirect: '/demo' },
     { path: '/demo', name: 'demo', component: DemoView, meta: { title: '演示' } },
-    { path: '/buffs', name: 'buffs', component: BuffListView, meta: { title: 'Buff 列表' } },
-    { path: '/buffs/new', name: 'buff-new', component: BuffEditorView, meta: { title: '新建 Buff' } },
-    { path: '/buffs/:id', name: 'buff-edit', component: BuffEditorView, meta: { title: '编辑 Buff' } },
+    { path: '/buffs', name: 'buffs', component: BuffListView, meta: { title: '效果列表' } },
+    { path: '/buffs/new', name: 'buff-new', component: BuffEditorView, meta: { title: '新建效果' } },
+    { path: '/buffs/:id', name: 'buff-edit', component: BuffEditorView, meta: { title: '编辑效果' } },
     {
       path: '/attributes',
       name: 'attributes',

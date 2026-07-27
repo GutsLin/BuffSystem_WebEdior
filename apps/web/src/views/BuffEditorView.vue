@@ -10,6 +10,7 @@ import { useBuffStore } from '@/stores/buffs';
 import {
   createEmptyBuff,
   dispelRules,
+  getOptionLabel,
   modifierKinds,
   stackPolicies,
   statusEffectOptions,
@@ -64,7 +65,7 @@ function createPayload(): BuffPayload {
 
 async function save() {
   if (!draft.key.trim() || !draft.displayName.trim()) {
-    showFailToast('请填写 Buff Key 和显示名称');
+    showFailToast('请填写效果标识和显示名称');
     activeTab.value = 0;
     return;
   }
@@ -83,7 +84,7 @@ async function save() {
 async function remove() {
   if (!id.value) return;
   try {
-    await showConfirmDialog({ title: '删除 Buff', message: '删除后无法从编辑器中恢复，确认继续吗？' });
+    await showConfirmDialog({ title: '删除效果', message: '删除后无法从编辑器中恢复，确认继续吗？' });
     await store.remove(id.value);
     showSuccessToast('已删除');
     await router.replace('/buffs');
@@ -96,8 +97,8 @@ async function remove() {
 <template>
   <section class="page-container editor-page">
     <PageHeader
-      eyebrow="Modifier Editor"
-      :title="isNew ? '新建 Buff' : draft.displayName || '编辑 Buff'"
+      eyebrow="效果编辑器"
+      :title="isNew ? '新建效果' : draft.displayName || '编辑效果'"
       description="配置运行规则、属性修改和事件动作，保存后即可导出给 Unity。"
     >
       <template #actions>
@@ -113,11 +114,11 @@ async function remove() {
         <van-tab title="基础信息">
           <div class="editor-panel">
             <div class="form-grid form-grid-2">
-              <van-field v-model="draft.key" label="Buff Key" placeholder="例如 PoisonDoT" required />
+              <van-field v-model="draft.key" label="效果标识" placeholder="例如 PoisonDoT" required />
               <van-field v-model="draft.displayName" label="显示名称" placeholder="例如 腐蚀毒素" required />
               <EnumSelect
                 :model-value="draft.modifierKind"
-                label="Modifier 类型"
+                label="效果类型"
                 :options="modifierKinds"
                 @update:model-value="draft.modifierKind = $event as BuffPayload['modifierKind']"
               />
@@ -151,13 +152,13 @@ async function remove() {
               label="说明"
               placeholder="描述用途、表现和策划备注"
             />
-            <van-field v-model="tagsText" label="标签" placeholder="demo, control, hero（逗号分隔）" />
+            <van-field v-model="tagsText" label="标签" placeholder="演示, 控制, 英雄（逗号分隔）" />
 
             <div class="subsection">
               <h3>状态效果</h3>
               <van-checkbox-group v-model="draft.statusEffects" direction="horizontal" class="checkbox-cloud">
                 <van-checkbox v-for="status in statusEffectOptions" :key="status" :name="status" shape="square">
-                  {{ status }}
+                  {{ getOptionLabel(status) }}
                 </van-checkbox>
               </van-checkbox-group>
             </div>
@@ -180,7 +181,7 @@ async function remove() {
         <van-tab :title="`属性修改 ${draft.attributeModifiers.length}`">
           <div class="editor-panel">
             <div class="section-intro">
-              <h2>Attribute Modifiers</h2>
+              <h2>属性修改器</h2>
               <p>可直接修改力量、敏捷、智力及派生战斗属性。</p>
             </div>
             <AttributeModifierEditor v-model="draft.attributeModifiers" />
@@ -190,8 +191,8 @@ async function remove() {
         <van-tab :title="`效果动作 ${draft.effectActions.length}`">
           <div class="editor-panel">
             <div class="section-intro">
-              <h2>Effect Actions</h2>
-              <p>伤害、治疗、施加 Modifier 和驱散统一通过动作描述导出。</p>
+              <h2>效果动作</h2>
+              <p>伤害、治疗、施加效果和驱散统一通过动作描述导出。</p>
             </div>
             <EffectActionEditor v-model="draft.effectActions" />
           </div>

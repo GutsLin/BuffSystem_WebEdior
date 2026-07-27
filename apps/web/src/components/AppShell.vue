@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const navigation = [
   { to: '/demo', label: '演示', icon: 'play-circle-o' },
-  { to: '/buffs', label: 'Buff', icon: 'cluster-o' },
+  { to: '/buffs', label: '效果', icon: 'cluster-o' },
   { to: '/attributes', label: '三维', icon: 'chart-trending-o' },
   { to: '/export', label: '导出', icon: 'down' },
 ];
@@ -17,7 +17,7 @@ const navigation = [
         <span class="brand-mark">BW</span>
         <span>
           <strong>BuffWork</strong>
-          <small>Unity Data Editor</small>
+          <small>Unity 数据编辑器</small>
         </span>
       </RouterLink>
 
@@ -37,7 +37,7 @@ const navigation = [
         <span class="online-dot" />
         <div>
           <strong>JSON 文件存储</strong>
-          <small>Docker Volume 持久化</small>
+          <small>Docker 数据卷持久化</small>
         </div>
       </div>
     </aside>

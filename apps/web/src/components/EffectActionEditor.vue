@@ -91,7 +91,7 @@ function removeItem(index: number) {
         <van-field
           v-if="item.actionType === 'ApplyModifier' || item.actionType === 'RemoveModifier'"
           :model-value="item.modifierTemplateId ?? ''"
-          label="Modifier Key"
+          label="效果模板标识"
           placeholder="例如 StunDebuff"
           @update:model-value="updateItem(index, { modifierTemplateId: $event })"
         />

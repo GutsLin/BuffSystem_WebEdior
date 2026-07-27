@@ -38,7 +38,7 @@ onMounted(refresh);
 
 <template>
   <section class="page-container">
-    <PageHeader eyebrow="Unity Export" title="导出游戏数据" description="导出稳定、可版本化的 JSON，供 Unity 端反序列化使用。">
+    <PageHeader eyebrow="Unity 数据导出" title="导出游戏数据" description="导出稳定、可版本化的 JSON，供 Unity 端反序列化使用。">
       <template #actions>
         <van-button plain icon="replay" :loading="loading" @click="refresh">刷新预览</van-button>
         <van-button type="primary" icon="down" @click="download">下载 JSON</van-button>
@@ -47,16 +47,16 @@ onMounted(refresh);
 
     <div class="export-layout">
       <aside class="export-summary">
-        <span class="eyebrow">Export Summary</span>
-        <h2>{{ payload?.buffs.length ?? 0 }} 个 Modifier</h2>
-        <div class="summary-row"><span>Schema</span><b>{{ payload?.schemaVersion ?? '-' }}</b></div>
+        <span class="eyebrow">导出摘要</span>
+        <h2>{{ payload?.buffs.length ?? 0 }} 个效果</h2>
+        <div class="summary-row"><span>数据版本</span><b>{{ payload?.schemaVersion ?? '-' }}</b></div>
         <div class="summary-row"><span>导出时间</span><b>{{ payload ? new Date(payload.exportedAt).toLocaleString() : '-' }}</b></div>
         <div class="summary-row"><span>全才系数</span><b>{{ payload?.attributeFormula.universalAttributeToAttackDamage ?? '-' }}</b></div>
         <van-button block plain type="primary" icon="records-o" @click="copy">复制 JSON</van-button>
         <p class="help-text">Unity 端建议按 <code>schemaVersion</code> 选择对应 DTO，枚举按字符串读取。</p>
       </aside>
       <div class="json-preview">
-        <div class="code-toolbar"><span>buff-system.json</span><span>{{ json.length.toLocaleString() }} chars</span></div>
+        <div class="code-toolbar"><span>buff-system.json</span><span>{{ json.length.toLocaleString() }} 字符</span></div>
         <pre>{{ json || '正在生成预览...' }}</pre>
       </div>
     </div>

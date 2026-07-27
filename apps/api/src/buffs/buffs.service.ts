@@ -19,7 +19,7 @@ export class BuffsService {
   async findOne(id: string): Promise<BuffTemplate> {
     const buff = (await this.findAll()).find((item) => item.id === id);
     if (!buff) {
-      throw new NotFoundException(`Buff ${id} not found`);
+      throw new NotFoundException(`未找到效果配置 ${id}`);
     }
     return buff;
   }
@@ -42,7 +42,7 @@ export class BuffsService {
     const buffs = await this.findAll();
     const index = buffs.findIndex((item) => item.id === id);
     if (index < 0) {
-      throw new NotFoundException(`Buff ${id} not found`);
+      throw new NotFoundException(`未找到效果配置 ${id}`);
     }
     this.assertUniqueKey(buffs, dto.key, id);
     const updated: BuffTemplate = {
@@ -79,14 +79,14 @@ export class BuffsService {
     const buffs = await this.findAll();
     const remaining = buffs.filter((item) => item.id !== id);
     if (remaining.length === buffs.length) {
-      throw new NotFoundException(`Buff ${id} not found`);
+      throw new NotFoundException(`未找到效果配置 ${id}`);
     }
     await this.storage.write(this.fileName, remaining);
   }
 
   private assertUniqueKey(buffs: BuffTemplate[], key: string, ignoredId?: string) {
     if (buffs.some((item) => item.key === key && item.id !== ignoredId)) {
-      throw new ConflictException(`Buff key ${key} already exists`);
+      throw new ConflictException(`效果标识 ${key} 已存在`);
     }
   }
 

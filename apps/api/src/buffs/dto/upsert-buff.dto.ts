@@ -84,7 +84,7 @@ export class UpsertBuffDto {
   @IsString()
   @IsNotEmpty()
   @Matches(/^[A-Za-z][A-Za-z0-9_]*$/, {
-    message: 'key must start with a letter and contain only letters, numbers, or underscores',
+    message: '效果标识必须以字母开头，并且只能包含字母、数字或下划线',
   })
   key: string;
 

@@ -4,7 +4,14 @@ import { showFailToast, showToast } from 'vant';
 import PageHeader from '@/components/PageHeader.vue';
 import { useBuffStore } from '@/stores/buffs';
 import { useSettingsStore } from '@/stores/settings';
-import type { AttributeModifier, BuffTemplate, DamageType, EffectTrigger, PrimaryAttributeType } from '@/types/buff';
+import {
+  getOptionLabel,
+  type AttributeModifier,
+  type BuffTemplate,
+  type DamageType,
+  type EffectTrigger,
+  type PrimaryAttributeType,
+} from '@/types/buff';
 
 interface ActiveBuffInstance {
   instanceId: string;
@@ -223,7 +230,7 @@ function applyDamage(value: number, damageType: DamageType = 'Magical') {
   }
   const actual = Math.max(0, value * multiplier);
   currentHp.value = Math.max(0, currentHp.value - actual);
-  addCombatLog(`受到 ${actual.toFixed(1)} 点${damageType}伤害`, 'damage');
+  addCombatLog(`受到 ${actual.toFixed(1)} 点${getOptionLabel(damageType)}伤害`, 'damage');
 }
 
 function applyHeal(value: number) {
@@ -281,7 +288,7 @@ function dispelDebuffs(type: 'Basic' | 'Strong') {
     return type === 'Strong' || buff.dispelRule === 'BasicDispellable';
   });
   for (const { instance } of removable) destroyInstance(instance);
-  if (removable.length) addCombatLog(`驱散了 ${removable.length} 个 Debuff`, 'status');
+  if (removable.length) addCombatLog(`驱散了 ${removable.length} 个减益效果`, 'status');
 }
 
 function addBuff(buff: BuffTemplate, silent = false) {
@@ -293,7 +300,9 @@ function addBuff(buff: BuffTemplate, silent = false) {
     const instance = createInstance(buff, timestamp);
     activeInstances.value.push(instance);
     executeActions(buff, 'OnCreated', instance);
-    if (buff.statusEffects.length) addCombatLog(`获得状态：${buff.statusEffects.join('、')}`, 'status');
+    if (buff.statusEffects.length) {
+      addCombatLog(`获得状态：${buff.statusEffects.map(getOptionLabel).join('、')}`, 'status');
+    }
     if (!silent) showToast(`${buff.displayName} 已添加`);
     return;
   }
@@ -401,7 +410,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="page-container demo-page">
-    <PageHeader eyebrow="Interactive Demo" title="英雄属性演示" description="添加 Buff 并观察持续时间、叠层规则和属性变化；倒计时结束后 Buff 会自动移除。">
+    <PageHeader eyebrow="交互演示" title="英雄属性演示" description="添加效果并观察持续时间、叠层规则和属性变化；倒计时结束后效果会自动移除。">
       <template #actions>
         <van-button plain type="primary" icon="cluster-o" to="/buffs">打开编辑器</van-button>
       </template>
@@ -411,17 +420,17 @@ onBeforeUnmount(() => {
       <aside class="demo-controls">
         <div class="hero-portrait">
           <div class="portrait-orb">{{ heroType.slice(0, 1) }}</div>
-          <div><span class="eyebrow">Level 1</span><h2>训练场英雄</h2></div>
+          <div><span class="eyebrow">1 级</span><h2>训练场英雄</h2></div>
         </div>
 
         <label class="control-label">英雄主属性</label>
         <div class="hero-type-grid">
           <button v-for="type in heroTypes" :key="type" :class="{ active: heroType === type }" @click="heroType = type">
-            {{ type }}
+            {{ getOptionLabel(type) }}
           </button>
         </div>
 
-        <label class="control-label">添加 Buff</label>
+        <label class="control-label">添加效果</label>
         <div class="demo-buff-list">
           <article v-for="buff in buffs.items" :key="buff.id" class="demo-buff-option">
             <div>
@@ -435,8 +444,8 @@ onBeforeUnmount(() => {
 
       <div class="demo-stage">
         <div class="stage-header">
-          <div><span class="eyebrow">Runtime Simulation</span><h2>{{ heroType }} Hero</h2></div>
-          <span class="active-count">{{ activeEntries.length }} 个 Buff 生效中</span>
+          <div><span class="eyebrow">运行时模拟</span><h2>{{ getOptionLabel(heroType) }}英雄</h2></div>
+          <span class="active-count">{{ activeEntries.length }} 个效果生效中</span>
         </div>
         <div class="hero-vitals">
           <div>
@@ -475,7 +484,7 @@ onBeforeUnmount(() => {
           <div class="combat-status-block">
             <span class="control-label">状态效果</span>
             <div v-if="activeStatusEffects.length" class="status-effect-cloud">
-              <span v-for="status in activeStatusEffects" :key="status">{{ status }}</span>
+              <span v-for="status in activeStatusEffects" :key="status">{{ getOptionLabel(status) }}</span>
             </div>
             <p v-else>当前没有控制或异常状态。</p>
           </div>
@@ -489,7 +498,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="active-effects">
           <div class="active-effects-header">
-            <h3>生效中的 Buff</h3>
+            <h3>生效中的效果</h3>
             <van-button v-if="activeEntries.length" size="mini" plain type="danger" @click="clearAll">全部移除</van-button>
           </div>
           <div v-if="activeEntries.length" class="active-effect-list">
@@ -501,7 +510,7 @@ onBeforeUnmount(() => {
               <div class="active-effect-main">
                 <div>
                   <strong>{{ entry.buff.displayName }}</strong>
-                  <small>{{ entry.buff.modifierKind }} · {{ entry.buff.key }}</small>
+                  <small>{{ getOptionLabel(entry.buff.modifierKind) }} · {{ entry.buff.key }}</small>
                 </div>
                 <div class="active-effect-meta">
                   <span v-if="entry.instance.stacks > 1">{{ entry.instance.stacks }} 层</span>
@@ -518,7 +527,7 @@ onBeforeUnmount(() => {
               />
             </article>
           </div>
-          <p v-else>从左侧添加 Buff 后，这里会显示运行时倒计时和属性变化。</p>
+          <p v-else>从左侧添加效果后，这里会显示运行时倒计时和属性变化。</p>
         </div>
       </div>
     </div>

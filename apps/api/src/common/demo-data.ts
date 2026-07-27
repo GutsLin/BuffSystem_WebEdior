@@ -531,7 +531,7 @@ export const demoBuffs: BuffTemplate[] = [
     id: 'demo-protective-link',
     key: 'ProtectiveLink',
     displayName: '守护链接',
-    description: '链接建立时施加法术护盾，链接结束时移除该 Modifier。',
+    description: '链接建立时施加法术护盾，链接结束时移除该效果。',
     modifierKind: 'Buff',
     duration: 6,
     stackPolicy: 'Refresh',

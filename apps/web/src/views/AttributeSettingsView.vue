@@ -89,7 +89,7 @@ async function save() {
 
 <template>
   <section class="page-container">
-    <PageHeader eyebrow="Attribute Formula" title="英雄三维公式" description="维护客户端与 Unity 共用的属性换算参数。">
+    <PageHeader eyebrow="属性公式" title="英雄三维公式" description="维护客户端与 Unity 共用的属性换算参数。">
       <template #actions>
         <van-button type="primary" icon="success" :loading="saving" @click="save">保存公式</van-button>
       </template>
@@ -99,7 +99,7 @@ async function save() {
     <template v-else>
       <div class="formula-hero-card">
         <div>
-          <span class="eyebrow">Default Profile</span>
+          <span class="eyebrow">默认配置</span>
           <h2>Dota 风格派生属性</h2>
           <p>所有数值都会写入 Unity 导出文件，实际平衡无需改动代码。</p>
         </div>
