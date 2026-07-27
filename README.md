@@ -2,6 +2,11 @@
 
 面向 Unity 的 Buff、英雄三维和战斗效果配置编辑器。
 
+## 在线访问
+
+- Buff 编辑器：http://117.72.150.120:8082
+- 域名：http://www.debugcat.cn（需完成京东云域名备案或合规放行后使用）
+
 ## 技术栈
 
 - 前端：Vue 3、TypeScript、Vant 4、Pinia、Vue Router
