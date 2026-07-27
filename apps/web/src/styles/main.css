@@ -767,6 +767,34 @@ pre {
   background: var(--brand-soft);
 }
 
+.hero-vitals {
+  display: grid;
+  grid-template-columns: auto minmax(160px, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1px solid #f0d7da;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #fff8f8, #fff);
+}
+
+.hero-vitals span,
+.hero-vitals strong {
+  display: block;
+}
+
+.hero-vitals span {
+  color: #a07d82;
+  font-size: 10px;
+}
+
+.hero-vitals strong {
+  margin-top: 3px;
+  color: #b63e4b;
+  font-size: 15px;
+}
+
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -793,6 +821,89 @@ pre {
   margin: 15px 0 3px;
   color: #262b3d;
   font-size: 23px;
+}
+
+.combat-status-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.combat-status-block {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #e8eaf1;
+  border-radius: 12px;
+  background: #fafbfe;
+}
+
+.combat-status-block .control-label {
+  margin: 0 0 10px;
+}
+
+.combat-status-block p {
+  margin: 0;
+  color: #969caf;
+  font-size: 11px;
+}
+
+.combat-state-grid,
+.status-effect-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.combat-state-chip,
+.status-effect-cloud span {
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.combat-state-chip {
+  color: #327a59;
+  background: #e3f5eb;
+}
+
+.combat-state-chip.disabled,
+.status-effect-cloud span {
+  color: #b33e4a;
+  background: #fde8ea;
+}
+
+.combat-log-block {
+  grid-column: 1 / -1;
+}
+
+.combat-log-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.combat-log-list span {
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 10px;
+  background: #eef0f6;
+}
+
+.combat-log-list .damage {
+  color: #b33e4a;
+  background: #fde8ea;
+}
+
+.combat-log-list .heal {
+  color: #327a59;
+  background: #e3f5eb;
+}
+
+.combat-log-list .status {
+  color: #5d52bb;
+  background: #eceaff;
 }
 
 .active-effects {
@@ -835,6 +946,11 @@ pre {
   border: 1px solid #e3e0ff;
   border-radius: 11px;
   background: rgba(255, 255, 255, 0.88);
+}
+
+.active-effect-card.is-debuff {
+  border-color: #f0c9ce;
+  background: rgba(255, 248, 249, 0.92);
 }
 
 .active-effect-main {
@@ -976,6 +1092,15 @@ pre {
 @media (max-width: 620px) {
   .page-header h1 {
     font-size: 30px;
+  }
+
+  .hero-vitals,
+  .combat-status-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .combat-log-block {
+    grid-column: auto;
   }
 
   .page-header-actions .van-button {
