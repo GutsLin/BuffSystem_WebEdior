@@ -1,0 +1,15 @@
+{
+  "name": "buffwork-web",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "dev": "concurrently -n API,WEB -c blue,green \"pnpm --filter @buffwork/api dev\" \"pnpm --filter @buffwork/web dev\"",
+    "build": "pnpm --filter @buffwork/api build && pnpm --filter @buffwork/web build",
+    "typecheck": "pnpm --filter @buffwork/api typecheck && pnpm --filter @buffwork/web typecheck",
+    "start": "pnpm --filter @buffwork/api start:prod"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}

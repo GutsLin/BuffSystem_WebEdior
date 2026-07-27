@@ -1,0 +1,18 @@
+services:
+  buffwork:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: buffwork-editor
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATA_DIR: /app/data
+    volumes:
+      - buffwork-data:/app/data
+
+volumes:
+  buffwork-data:
