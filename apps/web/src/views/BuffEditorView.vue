@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, toRaw } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { showConfirmDialog, showFailToast, showSuccessToast } from 'vant';
 import AttributeModifierEditor from '@/components/AttributeModifierEditor.vue';
@@ -27,13 +27,17 @@ const tagsText = ref('');
 const id = computed(() => (typeof route.params.id === 'string' ? route.params.id : undefined));
 const isNew = computed(() => !id.value);
 
+function clonePayload(payload: BuffPayload): BuffPayload {
+  return JSON.parse(JSON.stringify(payload)) as BuffPayload;
+}
+
 onMounted(async () => {
   if (!id.value) return;
   loading.value = true;
   try {
     const buff = await store.getById(id.value);
     const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...payload } = buff;
-    Object.assign(draft, structuredClone(payload));
+    Object.assign(draft, clonePayload(payload));
     tagsText.value = buff.tags.join(', ');
   } catch (error) {
     showFailToast((error as Error).message);
@@ -43,7 +47,7 @@ onMounted(async () => {
 });
 
 function createPayload(): BuffPayload {
-  const plainDraft = structuredClone(toRaw(draft));
+  const plainDraft = clonePayload(draft);
   return {
     ...plainDraft,
     duration: Number(draft.duration),
