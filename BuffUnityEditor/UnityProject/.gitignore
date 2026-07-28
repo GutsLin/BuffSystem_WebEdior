@@ -77,6 +77,14 @@ crashlytics-build.properties
 #Rider
 /.idea/
 
+# Codely local runtime and generated resources
+/.codely-cli/
+/.codelyignore
+/.com-unity-codely.json
+/CODELY.md
+/Assets/TJGenerators/
+/Assets/TJGenerators.meta
+
 #Bundles
 Bundles/
 
