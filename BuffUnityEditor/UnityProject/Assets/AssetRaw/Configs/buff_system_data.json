@@ -1,0 +1,654 @@
+{
+  "schemaVersion": "2.0.0",
+  "exportedAt": "2026-07-28T03:16:39.381Z",
+  "attributeFormula": {
+    "primaryAttributeDefault": "Strength",
+    "strengthToMaxHp": 22,
+    "strengthToHpRegen": 0.1,
+    "agilityToArmor": 0.16666666666666666,
+    "agilityToAttackSpeed": 1,
+    "intelligenceToMaxMana": 12,
+    "intelligenceToManaRegen": 0.05,
+    "intelligenceToMagicResistance": 0.001,
+    "primaryAttributeToAttackDamage": 1,
+    "universalAttributeToAttackDamage": 0.45,
+    "minAttackSpeed": 20,
+    "maxAttackSpeed": 700,
+    "physicalArmorFactor": 0.06
+  },
+  "buffs": [
+    {
+      "key": "BigDick",
+      "displayName": "大鸡",
+      "description": "可以变大",
+      "modifierKind": "Buff",
+      "duration": 10,
+      "stackPolicy": "Independent",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [
+        "Hex",
+        "Fear",
+        "Taunt",
+        "Silence",
+        "Blind",
+        "Break",
+        "Invulnerable",
+        "Ethereal",
+        "Stun"
+      ],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": false,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [],
+      "effectActions": [],
+      "tags": [],
+      "id": "951af01b-8b69-4ca1-a91d-f8d32b5804a5"
+    },
+    {
+      "id": "demo-protective-link",
+      "key": "ProtectiveLink",
+      "displayName": "守护链接",
+      "description": "链接建立时施加法术护盾，链接结束时移除该效果。",
+      "modifierKind": "Buff",
+      "duration": 6,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [],
+      "effectActions": [
+        {
+          "id": "protective-link-apply-shield",
+          "trigger": "OnCreated",
+          "actionType": "ApplyModifier",
+          "targetSelector": "Target",
+          "value": 0,
+          "scaleByStacks": false,
+          "modifierTemplateId": "demo-spell-shield"
+        },
+        {
+          "id": "protective-link-remove-shield",
+          "trigger": "OnDestroy",
+          "actionType": "RemoveModifier",
+          "targetSelector": "Target",
+          "value": 0,
+          "scaleByStacks": false,
+          "modifierTemplateId": "demo-spell-shield"
+        }
+      ],
+      "tags": [
+        "demo",
+        "link",
+        "modifier",
+        "defense"
+      ]
+    },
+    {
+      "id": "demo-battle-fury",
+      "key": "BattleFury",
+      "displayName": "战意沸腾",
+      "description": "提升力量与攻击速度，用于演示三维派生属性。",
+      "modifierKind": "Buff",
+      "duration": 12,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [
+        {
+          "id": "battle-fury-strength",
+          "attributeType": "Strength",
+          "op": "Add",
+          "value": 10,
+          "scaleByStacks": false,
+          "priority": 0
+        },
+        {
+          "id": "battle-fury-speed",
+          "attributeType": "AttackSpeed",
+          "op": "Add",
+          "value": 25,
+          "scaleByStacks": false,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "hero"
+      ]
+    },
+    {
+      "id": "demo-poison-dot",
+      "key": "PoisonDoT",
+      "displayName": "腐蚀毒素",
+      "description": "最多叠加 5 层，每秒造成随层数增长的魔法伤害。",
+      "modifierKind": "Debuff",
+      "duration": 5,
+      "stackPolicy": "Stack",
+      "maxStacks": 5,
+      "thinkInterval": 1,
+      "statusEffects": [
+        "Poisoned"
+      ],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": true,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [],
+      "effectActions": [
+        {
+          "id": "poison-damage",
+          "trigger": "OnIntervalThink",
+          "actionType": "DealDamage",
+          "targetSelector": "Target",
+          "value": 10,
+          "scaleByStacks": true,
+          "damageType": "Magical"
+        }
+      ],
+      "tags": [
+        "demo",
+        "dot",
+        "debuff"
+      ]
+    },
+    {
+      "id": "demo-stun",
+      "key": "StunDebuff",
+      "displayName": "震荡眩晕",
+      "description": "短时间眩晕目标，可被强驱散移除。",
+      "modifierKind": "Debuff",
+      "duration": 2,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [
+        "Stun"
+      ],
+      "dispelRule": "StrongDispellable",
+      "affectedByStatusResistance": true,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "control",
+        "debuff"
+      ]
+    },
+    {
+      "id": "demo-guardian-aura",
+      "key": "GuardianAura",
+      "displayName": "守护光环",
+      "description": "被动光环，使 900 范围内的友军获得护甲和魔法抗性。",
+      "modifierKind": "Buff",
+      "duration": -1,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "NotDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": false,
+      "isHidden": false,
+      "isPassive": true,
+      "isAura": true,
+      "auraRadius": 900,
+      "lingerDuration": 0.5,
+      "attributeModifiers": [
+        {
+          "id": "guardian-aura-armor",
+          "attributeType": "Armor",
+          "op": "Add",
+          "value": 5,
+          "scaleByStacks": false,
+          "priority": 0
+        },
+        {
+          "id": "guardian-aura-magic-resistance",
+          "attributeType": "MagicResistance",
+          "op": "PercentAdd",
+          "value": 12,
+          "scaleByStacks": false,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "aura",
+        "passive",
+        "defense"
+      ]
+    },
+    {
+      "id": "demo-frostbite",
+      "key": "Frostbite",
+      "displayName": "寒霜禁锢",
+      "description": "禁锢目标并降低其移动速度与攻击速度，持续时间受状态抗性影响。",
+      "modifierKind": "Debuff",
+      "duration": 4,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [
+        "Root",
+        "Slow"
+      ],
+      "dispelRule": "StrongDispellable",
+      "affectedByStatusResistance": true,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [
+        {
+          "id": "frostbite-move-speed",
+          "attributeType": "MoveSpeed",
+          "op": "PercentAdd",
+          "value": -30,
+          "scaleByStacks": false,
+          "priority": 0
+        },
+        {
+          "id": "frostbite-attack-speed",
+          "attributeType": "AttackSpeed",
+          "op": "Add",
+          "value": -40,
+          "scaleByStacks": false,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "control",
+        "slow",
+        "debuff"
+      ]
+    },
+    {
+      "id": "demo-haste-rune",
+      "key": "HasteRune",
+      "displayName": "极速神符",
+      "description": "将移动速度覆盖为高速状态，并额外提高攻击速度。",
+      "modifierKind": "Buff",
+      "duration": 22,
+      "stackPolicy": "Replace",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [
+        {
+          "id": "haste-rune-move-speed",
+          "attributeType": "MoveSpeed",
+          "op": "Override",
+          "value": 550,
+          "scaleByStacks": false,
+          "priority": 100
+        },
+        {
+          "id": "haste-rune-attack-speed",
+          "attributeType": "AttackSpeed",
+          "op": "Add",
+          "value": 60,
+          "scaleByStacks": false,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "rune",
+        "speed"
+      ]
+    },
+    {
+      "id": "demo-arcane-insight",
+      "key": "ArcaneInsight",
+      "displayName": "奥术洞察",
+      "description": "提高智力、法力恢复和技能增强，演示智力派生属性。",
+      "modifierKind": "Buff",
+      "duration": 15,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [
+        {
+          "id": "arcane-insight-intelligence",
+          "attributeType": "Intelligence",
+          "op": "Add",
+          "value": 16,
+          "scaleByStacks": false,
+          "priority": 0
+        },
+        {
+          "id": "arcane-insight-mana-regen",
+          "attributeType": "ManaRegen",
+          "op": "Add",
+          "value": 4,
+          "scaleByStacks": false,
+          "priority": 0
+        },
+        {
+          "id": "arcane-insight-spell-amplification",
+          "attributeType": "SpellAmplification",
+          "op": "PercentAdd",
+          "value": 15,
+          "scaleByStacks": false,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "hero",
+        "intelligence",
+        "caster"
+      ]
+    },
+    {
+      "id": "demo-regeneration-rune",
+      "key": "RegenerationRune",
+      "displayName": "恢复神符",
+      "description": "每秒恢复生命，演示周期触发和治疗动作。",
+      "modifierKind": "Buff",
+      "duration": 12,
+      "stackPolicy": "Replace",
+      "maxStacks": 1,
+      "thinkInterval": 1,
+      "statusEffects": [],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [],
+      "effectActions": [
+        {
+          "id": "regeneration-rune-heal",
+          "trigger": "OnIntervalThink",
+          "actionType": "Heal",
+          "targetSelector": "Self",
+          "value": 35,
+          "scaleByStacks": false
+        }
+      ],
+      "tags": [
+        "demo",
+        "rune",
+        "heal",
+        "hot"
+      ]
+    },
+    {
+      "id": "demo-berserker-stacks",
+      "key": "BerserkerStacks",
+      "displayName": "狂战士层数",
+      "description": "最多叠加 6 层，每层提升攻击速度和攻击伤害。",
+      "modifierKind": "Buff",
+      "duration": 6,
+      "stackPolicy": "Stack",
+      "maxStacks": 6,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [
+        {
+          "id": "berserker-stacks-attack-speed",
+          "attributeType": "AttackSpeed",
+          "op": "Add",
+          "value": 12,
+          "scaleByStacks": true,
+          "priority": 0
+        },
+        {
+          "id": "berserker-stacks-attack-damage",
+          "attributeType": "AttackDamage",
+          "op": "PercentAdd",
+          "value": 4,
+          "scaleByStacks": true,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "stack",
+        "carry",
+        "offense"
+      ]
+    },
+    {
+      "id": "demo-ethereal-form",
+      "key": "EtherealForm",
+      "displayName": "虚无形态",
+      "description": "进入虚无并被缴械，同时降低魔法抗性以表达额外魔法易伤。",
+      "modifierKind": "Neutral",
+      "duration": 4,
+      "stackPolicy": "Replace",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [
+        "Ethereal",
+        "Disarm"
+      ],
+      "dispelRule": "StrongDispellable",
+      "affectedByStatusResistance": true,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [
+        {
+          "id": "ethereal-form-magic-resistance",
+          "attributeType": "MagicResistance",
+          "op": "PercentAdd",
+          "value": -40,
+          "scaleByStacks": false,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "ethereal",
+        "control",
+        "neutral"
+      ]
+    },
+    {
+      "id": "demo-purifying-light",
+      "key": "PurifyingLight",
+      "displayName": "净化之光",
+      "description": "创建时治疗目标并执行强驱散，演示同一触发器执行多个动作。",
+      "modifierKind": "Buff",
+      "duration": 0.1,
+      "stackPolicy": "Independent",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "NotDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": true,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [],
+      "effectActions": [
+        {
+          "id": "purifying-light-heal",
+          "trigger": "OnCreated",
+          "actionType": "Heal",
+          "targetSelector": "Target",
+          "value": 250,
+          "scaleByStacks": false
+        },
+        {
+          "id": "purifying-light-dispel",
+          "trigger": "OnCreated",
+          "actionType": "Dispel",
+          "targetSelector": "Target",
+          "value": 0,
+          "scaleByStacks": false,
+          "dispelType": "Strong"
+        }
+      ],
+      "tags": [
+        "demo",
+        "heal",
+        "dispel",
+        "instant"
+      ]
+    },
+    {
+      "id": "demo-detonation-mark",
+      "key": "DetonationMark",
+      "displayName": "爆裂印记",
+      "description": "持续时间结束或被驱散时触发爆炸，对目标造成魔法伤害。",
+      "modifierKind": "Debuff",
+      "duration": 5,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [],
+      "dispelRule": "BasicDispellable",
+      "affectedByStatusResistance": true,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [],
+      "effectActions": [
+        {
+          "id": "detonation-mark-damage",
+          "trigger": "OnDestroy",
+          "actionType": "DealDamage",
+          "targetSelector": "Target",
+          "value": 180,
+          "scaleByStacks": false,
+          "damageType": "Magical"
+        }
+      ],
+      "tags": [
+        "demo",
+        "delayed",
+        "damage",
+        "debuff"
+      ]
+    },
+    {
+      "id": "demo-spell-shield",
+      "key": "SpellShield",
+      "displayName": "法术护盾",
+      "description": "提供减益免疫、魔法抗性与状态抗性。",
+      "modifierKind": "Buff",
+      "duration": 8,
+      "stackPolicy": "Refresh",
+      "maxStacks": 1,
+      "thinkInterval": -1,
+      "statusEffects": [
+        "DebuffImmune"
+      ],
+      "dispelRule": "NotDispellable",
+      "affectedByStatusResistance": false,
+      "removeOnDeath": true,
+      "isHidden": false,
+      "isPassive": false,
+      "isAura": false,
+      "auraRadius": 0,
+      "lingerDuration": 0,
+      "attributeModifiers": [
+        {
+          "id": "spell-shield-magic-resistance",
+          "attributeType": "MagicResistance",
+          "op": "PercentAdd",
+          "value": 30,
+          "scaleByStacks": false,
+          "priority": 0
+        },
+        {
+          "id": "spell-shield-status-resistance",
+          "attributeType": "StatusResistance",
+          "op": "PercentAdd",
+          "value": 40,
+          "scaleByStacks": false,
+          "priority": 0
+        }
+      ],
+      "effectActions": [],
+      "tags": [
+        "demo",
+        "immunity",
+        "defense"
+      ]
+    }
+  ]
+}
