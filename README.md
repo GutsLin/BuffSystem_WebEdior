@@ -77,6 +77,5 @@ Web 编辑 Buff -> NestJS 保存配置 -> 导出 Unity JSON -> Unity 加载配�
 ## 在线访问
 
 - Buff Web 编辑器：http://117.72.150.120:8082
-- 项目域名：http://www.debugcat.cn
 
 详细的 Web 开发和部署说明请查看 [`BuffWebEditor/README.md`](BuffWebEditor/README.md)。Unity 工程说明请查看 [`BuffUnityEditor/README.md`](BuffUnityEditor/README.md)。
