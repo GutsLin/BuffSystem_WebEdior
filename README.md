@@ -35,6 +35,38 @@ BuffWork_Web/
 Web 编辑 Buff -> NestJS 保存配置 -> 导出 Unity JSON -> Unity 加载配置 -> BuffDemoUI 运行验证
 ```
 
+## 功能预览
+
+### Web 英雄属性演示
+
+展示 Dota2 风格的力量、敏捷、智力及派生属性，Buff 持续时间结束后会自动移除。
+
+![Web 英雄属性演示](docs/images/web-hero-demo.png)
+
+### Buff 运行效果
+
+实时查看多个 Buff 和 Debuff 生效后的生命、攻击速度、状态效果、战斗记录与剩余时间。
+
+![Web Buff 运行效果](docs/images/web-active-buffs.png)
+
+### Buff 配置管理
+
+集中管理增益、减益、被动和光环效果，支持搜索、分类筛选、新建、复制和编辑。
+
+![Web Buff 配置管理](docs/images/web-buff-management.png)
+
+### Unity 数据导出
+
+预览并下载带版本号的 JSON 配置，供 Unity 端按照统一数据结构反序列化使用。
+
+![Unity JSON 数据导出](docs/images/web-unity-export.png)
+
+### TEngine Unity 演示面板
+
+在 Unity 中验证 Buff 叠层、持续时间、周期伤害、属性变化、驱散与战斗日志。
+
+![TEngine Unity Buff 演示面板](docs/images/unity-buff-demo.png)
+
 ## 技术栈
 
 - Web 前端：Vue 3、TypeScript、Vant 4、Pinia
