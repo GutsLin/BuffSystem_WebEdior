@@ -340,6 +340,8 @@
       ],
       "effectActions": [],
       "tags": [
+        "State.Buff",
+        "State.Buff.MoveSpeed",
         "demo",
         "rune",
         "speed"

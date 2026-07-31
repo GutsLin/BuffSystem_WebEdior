@@ -152,7 +152,7 @@ async function remove() {
               label="说明"
               placeholder="描述用途、表现和策划备注"
             />
-            <van-field v-model="tagsText" label="标签" placeholder="演示, 控制, 英雄（逗号分隔）" />
+            <van-field v-model="tagsText" label="GameplayTags" placeholder="State.Buff, State.Buff.MoveSpeed（逗号分隔）" />
 
             <div class="subsection">
               <h3>状态效果</h3>

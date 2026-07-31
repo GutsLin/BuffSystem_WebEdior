@@ -4,6 +4,7 @@ import BuffEditorView from '@/views/BuffEditorView.vue';
 import BuffListView from '@/views/BuffListView.vue';
 import DemoView from '@/views/DemoView.vue';
 import ExportView from '@/views/ExportView.vue';
+import GameplayTagsView from '@/views/GameplayTagsView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,6 +21,7 @@ const router = createRouter({
       meta: { title: '三维公式' },
     },
     { path: '/export', name: 'export', component: ExportView, meta: { title: 'Unity 导出' } },
+    { path: '/gameplay-tags', name: 'gameplay-tags', component: GameplayTagsView, meta: { title: 'GameplayTags' } },
   ],
 });
 

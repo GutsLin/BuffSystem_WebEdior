@@ -1,5 +1,6 @@
 using System;
 using TEngine;
+using GameplayTags;
 
 namespace GameLogic.Buffs
 {
@@ -121,6 +122,7 @@ namespace GameLogic.Buffs
         public float NextThinkRemaining { get; internal set; }
         public bool IsAuraProxy { get; }
         public string AuraSourceInstanceId { get; }
+        public GameplayTagContainer GameplayTags { get; }
 
         public bool IsPermanent => AppliedDuration < 0f;
         public bool IsRemoved { get; internal set; }
@@ -155,6 +157,7 @@ namespace GameLogic.Buffs
             Stacks = 1;
             IsAuraProxy = isAuraProxy;
             AuraSourceInstanceId = auraSourceInstanceId ?? string.Empty;
+            GameplayTags = template.GameplayTags;
             ResetDuration(duration);
         }
 

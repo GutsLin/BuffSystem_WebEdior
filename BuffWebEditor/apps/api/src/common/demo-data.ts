@@ -243,7 +243,7 @@ export const demoBuffs: BuffTemplate[] = [
       },
     ],
     effectActions: [],
-    tags: ['demo', 'rune', 'speed'],
+    tags: ['State.Buff', 'State.Buff.MoveSpeed', 'demo', 'rune', 'speed'],
     createdAt: now,
     updatedAt: now,
   },

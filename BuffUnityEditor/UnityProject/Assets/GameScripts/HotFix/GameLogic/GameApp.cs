@@ -3,6 +3,9 @@ using System.Reflection;
 using Cysharp.Threading.Tasks;
 using GameLogic;
 using GameLogic.Buffs;
+using UnityEngine.SceneManagement;
+using GameLogic.Item;
+using GameplayTags;
 #if ENABLE_OBFUZ
 using Obfuz;
 #endif
@@ -44,15 +47,20 @@ public partial class GameApp
     {
         try
         {
+            await GameplayTagRuntimeLoader.InitializeFromJsonAsync(GameplayTagRuntimeConfig.DefaultConfigLocation);
             await BuffSystemService.Instance.InitializeAsync();
+            BagSystem.Instance.InitDefaultItems(count: 100);
         }
         catch (System.Exception exception)
         {
-            Log.Error($"Buff 系统初始化失败：{exception}");
+            Log.Error($"GameplayTags/Buff 系统初始化失败，依赖系统不会启动：{exception}");
+            return;
         }
 
-        // GameEvent.Get<ILoginUI>().ShowLoginUI();
-        GameModule.UI.ShowUIAsync<BuffDemoUI>();
+        await GameModule.Scene.LoadSceneAsync("Game", LoadSceneMode.Additive);
+        Log.Info("======= Game 场景加载完成 =======");
+
+        GameModule.UI.ShowUIAsync<PlayerStatusUI>();
     }
     
     private static void Release()

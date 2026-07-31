@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using GameplayTags;
 
 namespace GameLogic.Buffs
 {
@@ -139,6 +140,7 @@ namespace GameLogic.Buffs
             }
 
             ValidateModifierReferences();
+            ResolveGameplayTags();
         }
 
         private static void NormalizeTemplate(BuffTemplate template, int index)
@@ -205,6 +207,33 @@ namespace GameLogic.Buffs
                             $"Buff {template.Key} 的动作 {action.Id} 引用了不存在的效果：{action.ModifierTemplateId}");
                     }
                 }
+            }
+        }
+
+        private void ResolveGameplayTags()
+        {
+            GameplayTagManager.InitializeIfNeeded();
+            for (int buffIndex = 0; buffIndex < Data.Buffs.Count; buffIndex++)
+            {
+                BuffTemplate template = Data.Buffs[buffIndex];
+                GameplayTagContainer container = new GameplayTagContainer();
+                for (int tagIndex = 0; tagIndex < template.Tags.Count; tagIndex++)
+                {
+                    string tagName = template.Tags[tagIndex];
+                    if (string.IsNullOrWhiteSpace(tagName))
+                    {
+                        continue;
+                    }
+
+                    if (!GameplayTagManager.RequestTag(tagName, out GameplayTag tag))
+                    {
+                        throw new BuffConfigurationException(
+                            $"Buff {template.Key} 引用了不存在的 GameplayTag：{tagName}");
+                    }
+
+                    container.AddTag(tag);
+                }
+                template.GameplayTags = container;
             }
         }
     }

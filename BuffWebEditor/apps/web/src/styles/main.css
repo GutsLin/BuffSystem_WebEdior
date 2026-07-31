@@ -618,6 +618,150 @@ pre {
   margin-top: 18px;
 }
 
+.gameplay-tags-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.7fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.tag-editor-column,
+.tag-list-column {
+  min-width: 0;
+}
+
+.tag-editor-card {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+}
+
+.tag-editor-card .section-intro {
+  margin-bottom: 4px;
+}
+
+.tag-form-grid {
+  align-items: center;
+}
+
+.tag-toolbar {
+  margin-bottom: 12px;
+}
+
+.tag-count {
+  flex-shrink: 0;
+  padding-right: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tag-summary-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.tag-summary-card span,
+.tag-summary-card strong {
+  display: block;
+  text-align: center;
+}
+
+.tag-summary-card span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.tag-summary-card strong {
+  margin-top: 5px;
+  color: var(--ink);
+  font-size: 20px;
+}
+
+.tag-tree-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.tag-tree-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border: 0;
+  border-bottom: 1px solid #eff1f5;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+}
+
+.tag-tree-row:last-child {
+  border-bottom: 0;
+}
+
+.tag-tree-row:hover,
+.tag-tree-row.selected {
+  background: #f4f2ff;
+}
+
+.tag-tree-row.deprecated {
+  opacity: 0.58;
+}
+
+.tag-tree-indent {
+  align-self: stretch;
+  flex: 0 0 auto;
+  border-left: 2px solid #e5e1ff;
+}
+
+.tag-tree-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.tag-tree-content strong,
+.tag-tree-content small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-tree-content strong {
+  color: var(--ink);
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 12px;
+}
+
+.tag-tree-content small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.tag-json-preview {
+  margin-top: 20px;
+}
+
+.tag-json-preview .code-toolbar {
+  align-items: center;
+}
+
+.tag-json-preview .van-button {
+  height: 26px;
+  color: #bfc6df;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
 .help-text {
   color: var(--muted);
   font-size: 11px;
@@ -1083,6 +1227,10 @@ pre {
     grid-template-columns: 1fr;
   }
 
+  .gameplay-tags-layout {
+    grid-template-columns: 1fr;
+  }
+
   .json-preview pre {
     max-height: 560px;
     min-height: 420px;
@@ -1158,6 +1306,10 @@ pre {
 
   .formula-hero-card {
     display: block;
+  }
+
+  .tag-summary-card {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .formula-hero-card .select-control {

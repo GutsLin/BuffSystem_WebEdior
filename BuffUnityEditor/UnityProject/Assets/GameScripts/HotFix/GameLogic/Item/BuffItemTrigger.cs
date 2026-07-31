@@ -6,11 +6,6 @@ using UnityEngine;
 
 namespace GameLogic.Item
 {
-    /// <summary>
-    /// 通用Buff道具触发器，挂在Player上。
-    /// 碰撞到带有BuffItem组件的道具时，自动施加对应Buff。
-    /// 要求：Player需有Collider2D（非Trigger），道具需有Collider2D（Trigger）。
-    /// </summary>
     [RequireComponent(typeof(Collider2D))]
     public class BuffItemTrigger : MonoBehaviour
     {
@@ -23,14 +18,8 @@ namespace GameLogic.Item
         private BuffUnit _buffUnit;
         private bool _initialized;
 
-        /// <summary>
-        /// 当前玩家对应的Buff运行时单位。
-        /// </summary>
         public BuffUnit BuffUnit => _buffUnit;
 
-        /// <summary>
-        /// Buff运行时单位是否已经创建完成。
-        /// </summary>
         public bool IsInitialized => _initialized && _buffUnit != null;
 
         private async UniTaskVoid Start()
@@ -56,6 +45,7 @@ namespace GameLogic.Item
                 teamId,
                 baseAttributes);
 
+            PlayerBuffUnitProvider.SetPlayerBuffUnit(_buffUnit);
             _initialized = true;
             Log.Info($"[BuffItemTrigger] Player BuffUnit已创建: {_buffUnit.Id}");
         }
@@ -72,21 +62,16 @@ namespace GameLogic.Item
                 return;
             }
 
-            var instance = _buffUnit.ApplyBuff(item.BuffKey, _buffUnit);
-            if (instance != null)
-            {
-                Log.Info($"[BuffItemTrigger] 拾取道具，施加Buff: {item.BuffKey}");
-            }
-            else
-            {
-                Log.Warning($"[BuffItemTrigger] Buff施加失败（可能被减益免疫阻挡）: {item.BuffKey}");
-            }
-
+            BagSystem.Instance.AddItem(item.BuffKey);
             item.Pickup();
         }
 
         private void OnDestroy()
         {
+            if (_buffUnit != null)
+            {
+                PlayerBuffUnitProvider.SetPlayerBuffUnit(null);
+            }
             _buffUnit = null;
         }
     }

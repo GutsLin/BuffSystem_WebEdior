@@ -1,0 +1,10 @@
+{
+  "name": "com.buffwork.gameplay-tags",
+  "displayName": "GameplayTags",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "GameplayTags runtime and Unity editor integration.",
+  "author": {
+    "name": "BuffWork"
+  }
+}

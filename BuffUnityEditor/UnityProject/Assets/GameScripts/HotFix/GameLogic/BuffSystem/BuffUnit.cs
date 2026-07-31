@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using GameplayTags;
 
 namespace GameLogic.Buffs
 {
@@ -21,6 +22,28 @@ namespace GameLogic.Buffs
         public float CurrentMana { get; private set; }
         public bool IsAlive => CurrentHp > 0f;
         public IReadOnlyList<BuffInstance> ActiveBuffs => _activeBuffs;
+
+        public GameplayTagContainer GameplayTags
+        {
+            get
+            {
+                GameplayTagContainer tags = new GameplayTagContainer();
+                for (int index = 0; index < _activeBuffs.Count; index++)
+                {
+                    BuffInstance instance = _activeBuffs[index];
+                    if (instance != null && !instance.IsRemoved)
+                    {
+                        tags.AddTags(instance.GameplayTags);
+                    }
+                }
+                return tags;
+            }
+        }
+
+        public bool HasGameplayTag(string tagName)
+        {
+            return GameplayTagManager.RequestTag(tagName, out GameplayTag tag) && GameplayTags.HasTag(tag);
+        }
 
         public bool CanMove => IsAlive &&
                                !HasAnyStatusEffect("Stun", "Root", "Hex", "Fear", "Taunt");

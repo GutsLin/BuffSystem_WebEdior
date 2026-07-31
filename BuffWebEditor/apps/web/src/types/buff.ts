@@ -238,6 +238,42 @@ export interface UnityExportPayload {
   buffs: Array<BuffPayload & { id: string }>;
 }
 
+export type GameplayTagSource = 'system' | 'web';
+
+export interface GameplayTag {
+  id: string;
+  name: string;
+  displayName: string;
+  description: string;
+  flags: number;
+  source: GameplayTagSource;
+  deprecated: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GameplayTagsVersion {
+  schemaVersion: string;
+  version: number;
+  publishedVersion: number;
+  publishedAt: string | null;
+  tagCount: number;
+}
+
+export interface GameplayTagsExportPayload {
+  schemaVersion: string;
+  version: number;
+  exportedAt: string;
+  tags: Array<{
+    name: string;
+    displayName: string;
+    description: string;
+    flags: number;
+    source: GameplayTagSource;
+    deprecated: boolean;
+  }>;
+}
+
 export function createId(prefix: string): string {
   const value = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
   return `${prefix}-${value}`;

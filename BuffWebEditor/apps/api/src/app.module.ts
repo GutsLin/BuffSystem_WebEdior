@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { AppController } from './app.controller';
 import { BuffsModule } from './buffs/buffs.module';
 import { ExportModule } from './export/export.module';
+import { GameplayTagsModule } from './gameplay-tags/gameplay-tags.module';
 import { SettingsModule } from './settings/settings.module';
 import { StorageModule } from './storage/storage.module';
 
@@ -17,6 +18,7 @@ import { StorageModule } from './storage/storage.module';
     BuffsModule,
     SettingsModule,
     ExportModule,
+    GameplayTagsModule,
   ],
   controllers: [AppController],
 })

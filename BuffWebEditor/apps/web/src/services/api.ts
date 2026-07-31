@@ -1,4 +1,12 @@
-import type { AttributeFormulaConfig, BuffPayload, BuffTemplate, UnityExportPayload } from '@/types/buff';
+import type {
+  AttributeFormulaConfig,
+  BuffPayload,
+  BuffTemplate,
+  GameplayTag,
+  GameplayTagsExportPayload,
+  GameplayTagsVersion,
+  UnityExportPayload,
+} from '@/types/buff';
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
@@ -41,4 +49,12 @@ export const api = {
       body: JSON.stringify(payload),
     }),
   getUnityPreview: () => request<UnityExportPayload>('/api/export/unity/preview'),
+  listGameplayTags: () => request<GameplayTag[]>('/api/gameplay-tags'),
+  getGameplayTagsVersion: () => request<GameplayTagsVersion>('/api/gameplay-tags/version'),
+  createGameplayTag: (payload: Omit<GameplayTag, 'id' | 'createdAt' | 'updatedAt'>) =>
+    request<GameplayTag>('/api/gameplay-tags', { method: 'POST', body: JSON.stringify(payload) }),
+  updateGameplayTag: (id: string, payload: Omit<GameplayTag, 'id' | 'createdAt' | 'updatedAt'>) =>
+    request<GameplayTag>(`/api/gameplay-tags/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  publishGameplayTags: () => request<GameplayTagsExportPayload>('/api/gameplay-tags/publish', { method: 'POST' }),
+  getGameplayTagsExport: () => request<GameplayTagsExportPayload>('/api/gameplay-tags/export'),
 };

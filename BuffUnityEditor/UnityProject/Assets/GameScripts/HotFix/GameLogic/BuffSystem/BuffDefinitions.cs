@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using GameplayTags;
 
 namespace GameLogic.Buffs
 {
@@ -311,6 +312,9 @@ namespace GameLogic.Buffs
 
         [JsonProperty("tags")]
         public List<string> Tags { get; set; } = new List<string>();
+
+        [JsonIgnore]
+        public GameplayTagContainer GameplayTags { get; internal set; }
 
         [JsonIgnore]
         public bool IsPermanent => IsPassive || Duration < 0f;
