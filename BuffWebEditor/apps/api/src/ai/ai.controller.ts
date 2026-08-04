@@ -1,13 +1,15 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { AiService } from './ai.service';
-import { GenerateBuffDto } from './dto/generate.dto';
 
 @Controller('ai')
 export class AiController {
+  private readonly logger = new Logger(AiController.name);
+
   constructor(private readonly aiService: AiService) {}
 
-  @Post('generate')
-  generate(@Body() dto: GenerateBuffDto) {
-    return this.aiService.generate(dto);
+  @Post('buff')
+  buff(@Body() body: { prompt: string }) {
+    this.logger.log('buff called');
+    return this.aiService.generate(body);
   }
 }

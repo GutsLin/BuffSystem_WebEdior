@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
-import { AiModule } from './ai/ai.module';
 import { AppController } from './app.controller';
 import { BuffsModule } from './buffs/buffs.module';
 import { ExportModule } from './export/export.module';
@@ -20,7 +19,6 @@ import { StorageModule } from './storage/storage.module';
     SettingsModule,
     ExportModule,
     GameplayTagsModule,
-    AiModule,
   ],
   controllers: [AppController],
 })
