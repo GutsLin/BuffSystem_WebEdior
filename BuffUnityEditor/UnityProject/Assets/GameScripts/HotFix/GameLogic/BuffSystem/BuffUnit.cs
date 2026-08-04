@@ -541,11 +541,11 @@ namespace GameLogic.Buffs
         {
             BuffUnitSaveData saveData = new BuffUnitSaveData
             {
-                unitId = Id,
-                currentHp = CurrentHp,
-                currentMana = CurrentMana,
-                primaryAttribute = PrimaryAttribute,
-                teamId = TeamId,
+                UnitId = Id,
+                CurrentHp = CurrentHp,
+                CurrentMana = CurrentMana,
+                PrimaryAttribute = PrimaryAttribute,
+                TeamId = TeamId,
             };
 
             for (int index = 0; index < _activeBuffs.Count; index++)
@@ -556,14 +556,14 @@ namespace GameLogic.Buffs
                     continue;
                 }
 
-                saveData.buffs.Add(new BuffInstanceSaveData
+                saveData.Buffs.Add(new BuffInstanceSaveData
                 {
-                    templateId = instance.Template.Id,
-                    remainingDuration = instance.RemainingDuration,
-                    nextThinkRemaining = instance.NextThinkRemaining,
-                    stacks = instance.Stacks,
-                    isAuraProxy = instance.IsAuraProxy,
-                    auraSourceInstanceId = instance.AuraSourceInstanceId ?? string.Empty,
+                    TemplateId = instance.Template.Id,
+                    RemainingDuration = instance.RemainingDuration,
+                    NextThinkRemaining = instance.NextThinkRemaining,
+                    Stacks = instance.Stacks,
+                    IsAuraProxy = instance.IsAuraProxy,
+                    AuraSourceInstanceId = instance.AuraSourceInstanceId ?? string.Empty,
                 });
             }
 
@@ -578,15 +578,15 @@ namespace GameLogic.Buffs
             }
 
             Clear(BuffRemovalReason.Manual);
-            CurrentHp = saveData.currentHp;
-            CurrentMana = saveData.currentMana;
-            PrimaryAttribute = saveData.primaryAttribute;
-            TeamId = saveData.teamId;
+            CurrentHp = saveData.CurrentHp;
+            CurrentMana = saveData.CurrentMana;
+            PrimaryAttribute = saveData.PrimaryAttribute;
+            TeamId = saveData.TeamId;
 
-            for (int index = 0; index < saveData.buffs.Count; index++)
+            for (int index = 0; index < saveData.Buffs.Count; index++)
             {
-                BuffInstanceSaveData buffSave = saveData.buffs[index];
-                if (!_world.Database.TryGet(buffSave.templateId, out BuffTemplate template))
+                BuffInstanceSaveData buffSave = saveData.Buffs[index];
+                if (!_world.Database.TryGet(buffSave.TemplateId, out BuffTemplate template))
                 {
                     continue;
                 }
@@ -594,14 +594,14 @@ namespace GameLogic.Buffs
                 BuffInstance instance = CreateInstance(
                     template,
                     this,
-                    buffSave.remainingDuration,
-                    buffSave.isAuraProxy,
-                    buffSave.auraSourceInstanceId,
+                    buffSave.RemainingDuration,
+                    buffSave.IsAuraProxy,
+                    buffSave.AuraSourceInstanceId,
                     false);
 
-                instance.RemainingDuration = buffSave.remainingDuration;
-                instance.NextThinkRemaining = buffSave.nextThinkRemaining;
-                instance.Stacks = Math.Max(1, buffSave.stacks);
+                instance.RemainingDuration = buffSave.RemainingDuration;
+                instance.NextThinkRemaining = buffSave.NextThinkRemaining;
+                instance.Stacks = Math.Max(1, buffSave.Stacks);
             }
 
             ClampResources();

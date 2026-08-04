@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TEngine;
 using GameplayTags;
 
@@ -258,22 +259,22 @@ namespace GameLogic.Buffs
     [Serializable]
     public sealed class BuffInstanceSaveData
     {
-        public string templateId;
-        public float remainingDuration;
-        public float nextThinkRemaining;
-        public int stacks;
-        public bool isAuraProxy;
-        public string auraSourceInstanceId;
+        public string TemplateId;
+        public float RemainingDuration;
+        public float NextThinkRemaining;
+        public int Stacks;
+        public bool IsAuraProxy;
+        public string AuraSourceInstanceId;
     }
 
     [Serializable]
     public sealed class BuffUnitSaveData
     {
-        public string unitId;
-        public float currentHp;
-        public float currentMana;
-        public PrimaryAttributeType primaryAttribute;
-        public int teamId;
-        public List<BuffInstanceSaveData> buffs = new List<BuffInstanceSaveData>();
+        public string UnitId;
+        public float CurrentHp;
+        public float CurrentMana;
+        public PrimaryAttributeType PrimaryAttribute;
+        public int TeamId;
+        public List<BuffInstanceSaveData> Buffs = new List<BuffInstanceSaveData>();
     }
 }
