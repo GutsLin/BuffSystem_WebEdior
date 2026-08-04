@@ -5,6 +5,7 @@ const route = useRoute();
 const navigation = [
   { to: '/demo', label: '演示', icon: 'play-circle-o' },
   { to: '/buffs', label: '效果', icon: 'cluster-o' },
+  { to: '/ai-generate', label: 'AI 生成', icon: 'gem-o' },
   { to: '/attributes', label: '三维', icon: 'chart-trending-o' },
   { to: '/gameplay-tags', label: '标签', icon: 'label-o' },
   { to: '/export', label: '导出', icon: 'down' },

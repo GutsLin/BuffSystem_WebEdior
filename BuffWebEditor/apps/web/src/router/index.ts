@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import AiGenerateView from '@/views/AiGenerateView.vue';
 import AttributeSettingsView from '@/views/AttributeSettingsView.vue';
 import BuffEditorView from '@/views/BuffEditorView.vue';
 import BuffListView from '@/views/BuffListView.vue';
@@ -20,6 +21,7 @@ const router = createRouter({
       component: AttributeSettingsView,
       meta: { title: '三维公式' },
     },
+    { path: '/ai-generate', name: 'ai-generate', component: AiGenerateView, meta: { title: 'AI 生成' } },
     { path: '/export', name: 'export', component: ExportView, meta: { title: 'Unity 导出' } },
     { path: '/gameplay-tags', name: 'gameplay-tags', component: GameplayTagsView, meta: { title: 'GameplayTags' } },
   ],

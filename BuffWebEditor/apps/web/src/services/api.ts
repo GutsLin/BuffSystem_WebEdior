@@ -57,4 +57,7 @@ export const api = {
     request<GameplayTag>(`/api/gameplay-tags/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   publishGameplayTags: () => request<GameplayTagsExportPayload>('/api/gameplay-tags/publish', { method: 'POST' }),
   getGameplayTagsExport: () => request<GameplayTagsExportPayload>('/api/gameplay-tags/export'),
+
+  generateBuff: (payload: { prompt: string }) =>
+    request<BuffPayload>('/api/ai/generate', { method: 'POST', body: JSON.stringify(payload) }),
 };
