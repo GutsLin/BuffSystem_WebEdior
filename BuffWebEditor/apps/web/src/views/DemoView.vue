@@ -166,6 +166,8 @@ const stats = computed(() => {
       intelligence * config.intelligenceToMagicResistance,
       list,
     ),
+    StatusResistance: calculateAttribute('StatusResistance', 0, list),
+    SpellAmplification: calculateAttribute('SpellAmplification', 0, list),
   };
 });
 
@@ -185,24 +187,37 @@ const statCards = computed(() => {
     ['生命恢复', stats.value.HpRegen, 'HP/s'],
     ['魔法恢复', stats.value.ManaRegen, 'MP/s'],
     ['魔法抗性', stats.value.MagicResistance * 100, '%'],
+    ['状态抗性', stats.value.StatusResistance * 100, '%'],
+    ['技能增强', stats.value.SpellAmplification, '%'],
   ];
 });
 
 function createInstance(buff: BuffTemplate, timestamp: number): ActiveBuffInstance {
   const permanent = buff.isPassive || buff.duration < 0;
+  let duration = Math.max(0, buff.duration);
+  if (buff.affectedByStatusResistance && stats.value) {
+    const resistance = Math.max(-1, Math.min(0.95, stats.value.StatusResistance));
+    duration *= 1 - resistance;
+  }
   return {
     instanceId: globalThis.crypto?.randomUUID?.() ?? `${buff.id}-${timestamp}-${Math.random()}`,
     buffId: buff.id,
     stacks: 1,
     startedAt: timestamp,
-    expiresAt: permanent ? null : timestamp + Math.max(0, buff.duration) * 1000,
+    expiresAt: permanent ? null : timestamp + duration * 1000,
     nextThinkAt: buff.thinkInterval > 0 ? timestamp + buff.thinkInterval * 1000 : null,
   };
 }
 
 function refreshInstance(instance: ActiveBuffInstance, buff: BuffTemplate, timestamp: number) {
   instance.startedAt = timestamp;
-  instance.expiresAt = buff.isPassive || buff.duration < 0 ? null : timestamp + Math.max(0, buff.duration) * 1000;
+  const permanent = buff.isPassive || buff.duration < 0;
+  let duration = Math.max(0, buff.duration);
+  if (!permanent && buff.affectedByStatusResistance && stats.value) {
+    const resistance = Math.max(-1, Math.min(0.95, stats.value.StatusResistance));
+    duration *= 1 - resistance;
+  }
+  instance.expiresAt = permanent ? null : timestamp + duration * 1000;
   instance.nextThinkAt = buff.thinkInterval > 0 ? timestamp + buff.thinkInterval * 1000 : null;
 }
 
@@ -247,8 +262,11 @@ function findModifierTemplate(templateId?: string) {
 
 function executeActions(buff: BuffTemplate, trigger: EffectTrigger, instance: ActiveBuffInstance) {
   for (const action of buff.effectActions.filter((item) => item.trigger === trigger)) {
-    const value = action.value * (action.scaleByStacks ? instance.stacks : 1);
+    let value = action.value * (action.scaleByStacks ? instance.stacks : 1);
     if (action.actionType === 'DealDamage') {
+      if (stats.value && action.damageType !== 'HpRemoval') {
+        value *= 1 + stats.value.SpellAmplification / 100;
+      }
       applyDamage(value, action.damageType);
     } else if (action.actionType === 'Heal') {
       applyHeal(value);

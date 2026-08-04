@@ -12,6 +12,8 @@ namespace GameLogic.Buffs
             new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase);
 
         private readonly List<BuffInstance> _activeBuffs = new List<BuffInstance>();
+        private readonly Dictionary<string, BuffInstance> _activeBuffIndex =
+            new Dictionary<string, BuffInstance>(StringComparer.OrdinalIgnoreCase);
         private readonly List<BuffInstance> _iterationSnapshot = new List<BuffInstance>();
 
         public string Id { get; }
@@ -526,6 +528,8 @@ namespace GameLogic.Buffs
             {
                 RemoveInstance(snapshot[index], reason);
             }
+
+            _activeBuffIndex.Clear();
         }
 
         private float CalculateDerivedAttribute(string attributeType)
@@ -634,7 +638,7 @@ namespace GameLogic.Buffs
             string auraSourceInstanceId,
             bool executeCreatedActions)
         {
-            BuffInstance instance = new BuffInstance(
+            BuffInstance instance = _world.InstancePool.Rent(
                 template,
                 this,
                 source,
@@ -642,6 +646,11 @@ namespace GameLogic.Buffs
                 isAuraProxy,
                 auraSourceInstanceId);
             _activeBuffs.Add(instance);
+
+            if (!isAuraProxy)
+            {
+                _activeBuffIndex[template.Id] = instance;
+            }
 
             _world.RaiseEvent(new BuffRuntimeEvent(
                 BuffRuntimeEventType.BuffApplied,
@@ -666,27 +675,32 @@ namespace GameLogic.Buffs
             }
 
             instance.IsRemoving = true;
-            try
+
+            if (!instance.IsAuraProxy)
             {
-                if (!instance.IsAuraProxy)
+                string templateId = instance.Template.Id;
+                if (_activeBuffIndex.TryGetValue(templateId, out BuffInstance indexed) &&
+                    ReferenceEquals(indexed, instance))
                 {
-                    _world.ExecuteActions(instance, BuffEffectTrigger.OnDestroy, this);
+                    _activeBuffIndex.Remove(templateId);
                 }
 
-                instance.IsRemoved = true;
-                _activeBuffs.Remove(instance);
-                _world.RaiseEvent(new BuffRuntimeEvent(
-                    BuffRuntimeEventType.BuffRemoved,
-                    this,
-                    instance.Source,
-                    instance,
-                    removalReason: reason));
+                _world.ExecuteActions(instance, BuffEffectTrigger.OnDestroy, this);
             }
-            finally
-            {
-                instance.IsRemoving = false;
-                ClampResources();
-            }
+
+            instance.IsRemoved = true;
+            _activeBuffs.Remove(instance);
+
+            _world.RaiseEvent(new BuffRuntimeEvent(
+                BuffRuntimeEventType.BuffRemoved,
+                this,
+                instance.Source,
+                instance,
+                removalReason: reason));
+
+            instance.IsRemoving = false;
+            _world.InstancePool.Return(instance);
+            ClampResources();
         }
 
         private void Die(BuffUnit source)
@@ -723,9 +737,16 @@ namespace GameLogic.Buffs
 
         private BuffInstance FindFirstActiveInstance(string templateId, bool includeAuraProxies)
         {
+            if (_activeBuffIndex.TryGetValue(templateId, out BuffInstance instance) &&
+                !instance.IsRemoved &&
+                (includeAuraProxies || !instance.IsAuraProxy))
+            {
+                return instance;
+            }
+
             for (int index = 0; index < _activeBuffs.Count; index++)
             {
-                BuffInstance instance = _activeBuffs[index];
+                instance = _activeBuffs[index];
                 if (!instance.IsRemoved && (includeAuraProxies || !instance.IsAuraProxy) &&
                     string.Equals(instance.Template.Id, templateId, StringComparison.OrdinalIgnoreCase))
                 {

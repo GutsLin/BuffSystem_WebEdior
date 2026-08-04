@@ -20,6 +20,7 @@ namespace GameLogic.Buffs
         public IReadOnlyCollection<BuffUnit> Units => _units.Values;
         public float AuraRefreshInterval { get; set; } = 0.1f;
         public Func<BuffUnit, BuffUnit, bool> AuraTargetFilter { get; set; }
+        internal BuffInstancePool InstancePool { get; } = new BuffInstancePool();
 
         public event Action<BuffRuntimeEvent> EventRaised;
 
@@ -105,6 +106,7 @@ namespace GameLogic.Buffs
         public void Dispose()
         {
             Clear();
+            InstancePool.Clear();
             EventRaised = null;
         }
 

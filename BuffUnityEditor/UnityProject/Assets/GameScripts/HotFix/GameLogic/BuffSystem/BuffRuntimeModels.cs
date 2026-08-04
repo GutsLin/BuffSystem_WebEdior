@@ -112,17 +112,17 @@ namespace GameLogic.Buffs
 
     public sealed class BuffInstance
     {
-        public string InstanceId { get; }
-        public BuffTemplate Template { get; }
-        public BuffUnit Owner { get; }
-        public BuffUnit Source { get; }
+        public string InstanceId { get; private set; }
+        public BuffTemplate Template { get; private set; }
+        public BuffUnit Owner { get; private set; }
+        public BuffUnit Source { get; private set; }
         public int Stacks { get; internal set; }
         public float AppliedDuration { get; internal set; }
         public float RemainingDuration { get; internal set; }
         public float NextThinkRemaining { get; internal set; }
-        public bool IsAuraProxy { get; }
-        public string AuraSourceInstanceId { get; }
-        public GameplayTagContainer GameplayTags { get; }
+        public bool IsAuraProxy { get; private set; }
+        public string AuraSourceInstanceId { get; private set; }
+        public GameplayTagContainer GameplayTags { get; private set; }
 
         public bool IsPermanent => AppliedDuration < 0f;
         public bool IsRemoved { get; internal set; }
@@ -142,7 +142,22 @@ namespace GameLogic.Buffs
 
         internal bool IsRemoving { get; set; }
 
+        internal BuffInstance()
+        {
+        }
+
         internal BuffInstance(
+            BuffTemplate template,
+            BuffUnit owner,
+            BuffUnit source,
+            float duration,
+            bool isAuraProxy,
+            string auraSourceInstanceId)
+        {
+            Initialize(template, owner, source, duration, isAuraProxy, auraSourceInstanceId);
+        }
+
+        internal void Initialize(
             BuffTemplate template,
             BuffUnit owner,
             BuffUnit source,
@@ -158,7 +173,25 @@ namespace GameLogic.Buffs
             IsAuraProxy = isAuraProxy;
             AuraSourceInstanceId = auraSourceInstanceId ?? string.Empty;
             GameplayTags = template.GameplayTags;
+            IsRemoved = false;
+            IsRemoving = false;
             ResetDuration(duration);
+        }
+
+        internal void Deinitialize()
+        {
+            InstanceId = null;
+            Template = null;
+            Owner = null;
+            Source = null;
+            IsAuraProxy = false;
+            AuraSourceInstanceId = null;
+            GameplayTags = null;
+            Stacks = 0;
+            IsRemoving = false;
+            AppliedDuration = 0f;
+            RemainingDuration = 0f;
+            NextThinkRemaining = 0f;
         }
 
         internal void ResetDuration(float duration)
@@ -176,6 +209,49 @@ namespace GameLogic.Buffs
             }
 
             return value > 1f ? 1f : value;
+        }
+    }
+
+    public sealed class BuffInstancePool
+    {
+        private readonly Stack<BuffInstance> _pool = new Stack<BuffInstance>();
+
+        public BuffInstance Rent(
+            BuffTemplate template,
+            BuffUnit owner,
+            BuffUnit source,
+            float duration,
+            bool isAuraProxy,
+            string auraSourceInstanceId)
+        {
+            BuffInstance instance;
+            if (_pool.Count > 0)
+            {
+                instance = _pool.Pop();
+                instance.Initialize(template, owner, source, duration, isAuraProxy, auraSourceInstanceId);
+            }
+            else
+            {
+                instance = new BuffInstance(template, owner, source, duration, isAuraProxy, auraSourceInstanceId);
+            }
+
+            return instance;
+        }
+
+        public void Return(BuffInstance instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+
+            instance.Deinitialize();
+            _pool.Push(instance);
+        }
+
+        public void Clear()
+        {
+            _pool.Clear();
         }
     }
 }
