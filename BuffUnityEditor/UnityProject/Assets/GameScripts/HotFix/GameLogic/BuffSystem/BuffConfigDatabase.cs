@@ -162,6 +162,8 @@ namespace GameLogic.Buffs
             template.AttributeModifiers ??= new List<BuffAttributeModifier>();
             template.EffectActions ??= new List<BuffEffectAction>();
             template.Tags ??= new List<string>();
+            template.RequiredStatusEffects ??= new List<string>();
+            template.ApplyChance = Clamp01(template.ApplyChance);
 
             for (int modifierIndex = 0; modifierIndex < template.AttributeModifiers.Count; modifierIndex++)
             {
@@ -235,6 +237,16 @@ namespace GameLogic.Buffs
                 }
                 template.GameplayTags = container;
             }
+        }
+
+        private static float Clamp01(float value)
+        {
+            if (value < 0f)
+            {
+                return 0f;
+            }
+
+            return value > 1f ? 1f : value;
         }
     }
 }

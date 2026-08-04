@@ -254,4 +254,26 @@ namespace GameLogic.Buffs
             _pool.Clear();
         }
     }
+
+    [Serializable]
+    public sealed class BuffInstanceSaveData
+    {
+        public string templateId;
+        public float remainingDuration;
+        public float nextThinkRemaining;
+        public int stacks;
+        public bool isAuraProxy;
+        public string auraSourceInstanceId;
+    }
+
+    [Serializable]
+    public sealed class BuffUnitSaveData
+    {
+        public string unitId;
+        public float currentHp;
+        public float currentMana;
+        public PrimaryAttributeType primaryAttribute;
+        public int teamId;
+        public List<BuffInstanceSaveData> buffs = new List<BuffInstanceSaveData>();
+    }
 }

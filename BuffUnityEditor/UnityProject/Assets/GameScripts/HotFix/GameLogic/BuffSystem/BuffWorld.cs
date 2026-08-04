@@ -6,8 +6,6 @@ namespace GameLogic.Buffs
 {
     public sealed class BuffWorld : IDisposable
     {
-        private const int MAX_ACTION_DEPTH = 16;
-
         private readonly Dictionary<string, BuffUnit> _units =
             new Dictionary<string, BuffUnit>(StringComparer.OrdinalIgnoreCase);
 
@@ -18,7 +16,7 @@ namespace GameLogic.Buffs
 
         public BuffConfigDatabase Database { get; }
         public IReadOnlyCollection<BuffUnit> Units => _units.Values;
-        public float AuraRefreshInterval { get; set; } = 0.1f;
+        public float AuraRefreshInterval { get; set; } = BuffConfig.AuraRefreshInterval;
         public Func<BuffUnit, BuffUnit, bool> AuraTargetFilter { get; set; }
         internal BuffInstancePool InstancePool { get; } = new BuffInstancePool();
 
@@ -83,7 +81,7 @@ namespace GameLogic.Buffs
             }
 
             _auraRefreshElapsed += deltaTime;
-            if (_auraRefreshElapsed >= Math.Max(0.02f, AuraRefreshInterval))
+            if (_auraRefreshElapsed >= Math.Max(BuffConfig.MinAuraRefreshInterval, AuraRefreshInterval))
             {
                 _auraRefreshElapsed = 0f;
                 RefreshAuras();
@@ -115,7 +113,7 @@ namespace GameLogic.Buffs
             BuffEffectTrigger trigger,
             BuffUnit eventTarget)
         {
-            if (instance == null || instance.IsRemoved || instance.IsAuraProxy || _actionDepth >= MAX_ACTION_DEPTH)
+            if (instance == null || instance.IsRemoved || instance.IsAuraProxy || _actionDepth >= BuffConfig.MaxActionDepth)
             {
                 return;
             }
@@ -128,6 +126,11 @@ namespace GameLogic.Buffs
                 {
                     BuffEffectAction action = actions[index];
                     if (action == null || action.Trigger != trigger)
+                    {
+                        continue;
+                    }
+
+                    if (!IsConditionMet(action, instance, eventTarget))
                     {
                         continue;
                     }
@@ -175,6 +178,108 @@ namespace GameLogic.Buffs
         internal void RaiseEvent(BuffRuntimeEvent runtimeEvent)
         {
             EventRaised?.Invoke(runtimeEvent);
+        }
+
+        public void TriggerCustomEvent(BuffUnit unit, string eventName, BuffUnit eventTarget = null)
+        {
+            if (unit == null || string.IsNullOrWhiteSpace(eventName))
+            {
+                return;
+            }
+
+            List<BuffInstance> snapshot = new List<BuffInstance>(unit.ActiveBuffs);
+            for (int index = 0; index < snapshot.Count; index++)
+            {
+                BuffInstance instance = snapshot[index];
+                if (instance.IsRemoved || instance.IsAuraProxy)
+                {
+                    continue;
+                }
+
+                List<BuffEffectAction> actions = instance.Template.EffectActions;
+                for (int actionIndex = 0; actionIndex < actions.Count; actionIndex++)
+                {
+                    BuffEffectAction action = actions[actionIndex];
+                    if (action != null &&
+                        action.Trigger == BuffEffectTrigger.OnCustomEvent &&
+                        string.Equals(action.EventName, eventName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ExecuteActionDirect(instance, action, eventTarget ?? unit);
+                    }
+                }
+            }
+        }
+
+        private static bool IsConditionMet(
+            BuffEffectAction action,
+            BuffInstance instance,
+            BuffUnit eventTarget)
+        {
+            BuffEffectCondition condition = action.Condition;
+            if (condition == null)
+            {
+                return true;
+            }
+
+            BuffUnit checkTarget = action.TargetSelector == BuffTargetSelector.Self
+                ? instance.Owner
+                : eventTarget ?? instance.Owner;
+
+            if (checkTarget == null)
+            {
+                return false;
+            }
+
+            if (condition.HealthPercentMin.HasValue || condition.HealthPercentMax.HasValue)
+            {
+                float maxHp = checkTarget.GetAttribute(CombatAttributeNames.MaxHp);
+                if (maxHp <= 0f)
+                {
+                    return false;
+                }
+
+                float healthPercent = checkTarget.CurrentHp / maxHp * 100f;
+                if (condition.HealthPercentMin.HasValue && healthPercent < condition.HealthPercentMin.Value)
+                {
+                    return false;
+                }
+
+                if (condition.HealthPercentMax.HasValue && healthPercent > condition.HealthPercentMax.Value)
+                {
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(condition.RequiredStatusEffect) &&
+                !checkTarget.HasStatusEffect(condition.RequiredStatusEffect))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void ExecuteActionDirect(
+            BuffInstance instance,
+            BuffEffectAction action,
+            BuffUnit eventTarget)
+        {
+            if (_actionDepth >= BuffConfig.MaxActionDepth)
+            {
+                return;
+            }
+
+            _actionDepth++;
+            try
+            {
+                ExecuteAction(instance, action,
+                    ResolveTarget(instance, action.TargetSelector, eventTarget),
+                    action.Trigger);
+            }
+            finally
+            {
+                _actionDepth--;
+            }
         }
 
         private void ExecuteAction(
@@ -227,6 +332,15 @@ namespace GameLogic.Buffs
                     if (!string.IsNullOrWhiteSpace(action.ModifierTemplateId))
                     {
                         target.RemoveBuff(action.ModifierTemplateId, BuffRemovalReason.Manual);
+                    }
+
+                    break;
+
+                case BuffEffectActionType.RefreshModifier:
+                    if (!string.IsNullOrWhiteSpace(action.ModifierTemplateId) &&
+                        Database.TryGet(action.ModifierTemplateId, out BuffTemplate refreshTemplate))
+                    {
+                        target.ApplyBuff(refreshTemplate, source);
                     }
 
                     break;

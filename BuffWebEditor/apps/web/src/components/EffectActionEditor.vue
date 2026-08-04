@@ -89,7 +89,7 @@ function removeItem(index: number) {
           @update:model-value="updateItem(index, { attributeType: $event })"
         />
         <van-field
-          v-if="item.actionType === 'ApplyModifier' || item.actionType === 'RemoveModifier'"
+          v-if="item.actionType === 'ApplyModifier' || item.actionType === 'RemoveModifier' || item.actionType === 'RefreshModifier'"
           :model-value="item.modifierTemplateId ?? ''"
           label="效果模板标识"
           placeholder="例如 StunDebuff"
@@ -101,6 +101,13 @@ function removeItem(index: number) {
           label="驱散强度"
           :options="['Basic', 'Strong']"
           @update:model-value="updateItem(index, { dispelType: $event as EffectAction['dispelType'] })"
+        />
+        <van-field
+          v-if="item.trigger === 'OnCustomEvent'"
+          :model-value="item.eventName ?? ''"
+          label="事件名称"
+          placeholder="例如 OnKill"
+          @update:model-value="updateItem(index, { eventName: $event })"
         />
         <van-cell title="按层数缩放">
           <template #right-icon>

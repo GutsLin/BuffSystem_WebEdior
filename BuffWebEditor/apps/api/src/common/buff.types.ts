@@ -17,6 +17,7 @@ export const effectActionTypes = [
   'ModifyAttribute',
   'ApplyModifier',
   'RemoveModifier',
+  'RefreshModifier',
   'Dispel',
 ] as const;
 export const targetSelectors = ['Self', 'Source', 'Target', 'AuraTargets'] as const;
@@ -29,6 +30,7 @@ export const effectTriggers = [
   'OnTakeDamage',
   'OnDealDamage',
   'OnDestroy',
+  'OnCustomEvent',
 ] as const;
 
 export type PrimaryAttributeType = (typeof primaryAttributeTypes)[number];
@@ -61,6 +63,12 @@ export interface EffectAction {
   attributeType?: string;
   modifierTemplateId?: string;
   dispelType?: 'Basic' | 'Strong';
+  eventName?: string;
+  condition?: {
+    healthPercentMin?: number;
+    healthPercentMax?: number;
+    requiredStatusEffect?: string;
+  };
 }
 
 export interface BuffTemplate {
@@ -85,6 +93,9 @@ export interface BuffTemplate {
   attributeModifiers: AttributeModifier[];
   effectActions: EffectAction[];
   tags: string[];
+  applyChance: number;
+  applyCooldown: number;
+  requiredStatusEffects: string[];
   createdAt: string;
   updatedAt: string;
 }

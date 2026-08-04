@@ -44,6 +44,20 @@ class AttributeModifierDto {
   priority: number;
 }
 
+class EffectConditionDto {
+  @IsOptional()
+  @IsNumber()
+  healthPercentMin?: number;
+
+  @IsOptional()
+  @IsNumber()
+  healthPercentMax?: number;
+
+  @IsOptional()
+  @IsString()
+  requiredStatusEffect?: string;
+}
+
 class EffectActionDto {
   @IsString()
   id: string;
@@ -78,6 +92,15 @@ class EffectActionDto {
   @IsOptional()
   @IsIn(['Basic', 'Strong'])
   dispelType?: 'Basic' | 'Strong';
+
+  @IsOptional()
+  @IsString()
+  eventName?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => EffectConditionDto)
+  condition?: EffectConditionDto;
 }
 
 export class UpsertBuffDto {
@@ -154,4 +177,14 @@ export class UpsertBuffDto {
   @IsArray()
   @IsString({ each: true })
   tags: string[];
+
+  @IsNumber()
+  applyChance: number;
+
+  @IsNumber()
+  applyCooldown: number;
+
+  @IsArray()
+  @IsString({ each: true })
+  requiredStatusEffects: string[];
 }

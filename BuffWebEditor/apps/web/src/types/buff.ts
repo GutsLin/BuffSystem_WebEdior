@@ -10,6 +10,7 @@ export const effectActionTypes = [
   'ModifyAttribute',
   'ApplyModifier',
   'RemoveModifier',
+  'RefreshModifier',
   'Dispel',
 ] as const;
 export const targetSelectors = ['Self', 'Source', 'Target', 'AuraTargets'] as const;
@@ -22,6 +23,7 @@ export const effectTriggers = [
   'OnTakeDamage',
   'OnDealDamage',
   'OnDestroy',
+  'OnCustomEvent',
 ] as const;
 
 export const attributeTypeOptions = [
@@ -98,6 +100,7 @@ export const optionLabelMap: Record<string, string> = {
   ModifyAttribute: '修改属性',
   ApplyModifier: '施加效果',
   RemoveModifier: '移除效果',
+  RefreshModifier: '刷新效果',
   Dispel: '驱散',
   Self: '自身',
   Source: '来源单位',
@@ -111,6 +114,7 @@ export const optionLabelMap: Record<string, string> = {
   OnTakeDamage: '受到伤害时',
   OnDealDamage: '造成伤害时',
   OnDestroy: '移除时',
+  OnCustomEvent: '自定义事件',
   Basic: '弱驱散',
   Strong: '强驱散',
   MaxHp: '最大生命',
@@ -173,6 +177,12 @@ export interface AttributeModifier {
   priority: number;
 }
 
+export interface EffectCondition {
+  healthPercentMin?: number;
+  healthPercentMax?: number;
+  requiredStatusEffect?: string;
+}
+
 export interface EffectAction {
   id: string;
   trigger: EffectTrigger;
@@ -184,6 +194,8 @@ export interface EffectAction {
   attributeType?: string;
   modifierTemplateId?: string;
   dispelType?: 'Basic' | 'Strong';
+  eventName?: string;
+  condition?: EffectCondition;
 }
 
 export interface BuffPayload {
@@ -207,6 +219,9 @@ export interface BuffPayload {
   attributeModifiers: AttributeModifier[];
   effectActions: EffectAction[];
   tags: string[];
+  applyChance: number;
+  applyCooldown: number;
+  requiredStatusEffects: string[];
 }
 
 export interface BuffTemplate extends BuffPayload {
@@ -301,5 +316,8 @@ export function createEmptyBuff(): BuffPayload {
     attributeModifiers: [],
     effectActions: [],
     tags: [],
+    applyChance: 1,
+    applyCooldown: 0,
+    requiredStatusEffects: [],
   };
 }

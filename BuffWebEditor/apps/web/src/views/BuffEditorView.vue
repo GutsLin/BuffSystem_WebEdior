@@ -25,6 +25,7 @@ const loading = ref(false);
 const activeTab = ref(0);
 const draft = reactive<BuffPayload>(createEmptyBuff());
 const tagsText = ref('');
+const requiredStatusText = ref('');
 const id = computed(() => (typeof route.params.id === 'string' ? route.params.id : undefined));
 const isNew = computed(() => !id.value);
 
@@ -40,6 +41,7 @@ onMounted(async () => {
     const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...payload } = buff;
     Object.assign(draft, clonePayload(payload));
     tagsText.value = buff.tags.join(', ');
+    requiredStatusText.value = buff.requiredStatusEffects.join(', ');
   } catch (error) {
     showFailToast((error as Error).message);
   } finally {
@@ -59,6 +61,10 @@ function createPayload(): BuffPayload {
     tags: tagsText.value
       .split(',')
       .map((tag) => tag.trim())
+      .filter(Boolean),
+    requiredStatusEffects: requiredStatusText.value
+      .split(',')
+      .map((s) => s.trim())
       .filter(Boolean),
   };
 }
@@ -174,6 +180,20 @@ async function remove() {
             <div v-if="draft.isAura" class="form-grid form-grid-2 subsection">
               <van-field v-model.number="draft.auraRadius" type="number" label="光环半径" input-align="right" />
               <van-field v-model.number="draft.lingerDuration" type="number" label="离开后残留（秒）" input-align="right" />
+            </div>
+
+            <div class="subsection">
+              <h3>施加条件</h3>
+              <div class="form-grid form-grid-2">
+                <van-field v-model.number="draft.applyChance" type="number" label="施加概率 (0~1)" input-align="right" />
+                <van-field v-model.number="draft.applyCooldown" type="number" label="冷却时间（秒）" input-align="right" />
+              </div>
+              <van-field
+                v-model="requiredStatusText"
+                type="text"
+                label="前置状态效果"
+                placeholder="逗号分隔，例如 Stun, Silence"
+              />
             </div>
           </div>
         </van-tab>

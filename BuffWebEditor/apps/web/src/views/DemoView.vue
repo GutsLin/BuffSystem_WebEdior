@@ -276,6 +276,9 @@ function executeActions(buff: BuffTemplate, trigger: EffectTrigger, instance: Ac
     } else if (action.actionType === 'RemoveModifier') {
       const target = findModifierTemplate(action.modifierTemplateId);
       if (target) removeBuff(target.id);
+    } else if (action.actionType === 'RefreshModifier') {
+      const target = findModifierTemplate(action.modifierTemplateId);
+      if (target) addBuff(target, true);
     } else if (action.actionType === 'Dispel') {
       dispelDebuffs(action.dispelType ?? 'Basic');
     }

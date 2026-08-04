@@ -100,6 +100,7 @@ namespace GameLogic.Buffs
         ModifyAttribute,
         ApplyModifier,
         RemoveModifier,
+        RefreshModifier,
         Dispel,
     }
 
@@ -123,6 +124,7 @@ namespace GameLogic.Buffs
         OnTakeDamage,
         OnDealDamage,
         OnDestroy,
+        OnCustomEvent,
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -214,6 +216,19 @@ namespace GameLogic.Buffs
     }
 
     [Serializable]
+    public sealed class BuffEffectCondition
+    {
+        [JsonProperty("healthPercentMin")]
+        public float? HealthPercentMin { get; set; }
+
+        [JsonProperty("healthPercentMax")]
+        public float? HealthPercentMax { get; set; }
+
+        [JsonProperty("requiredStatusEffect")]
+        public string RequiredStatusEffect { get; set; }
+    }
+
+    [Serializable]
     public sealed class BuffEffectAction
     {
         [JsonProperty("id")]
@@ -245,6 +260,12 @@ namespace GameLogic.Buffs
 
         [JsonProperty("dispelType")]
         public BuffDispelType? DispelType { get; set; }
+
+        [JsonProperty("eventName")]
+        public string EventName { get; set; } = string.Empty;
+
+        [JsonProperty("condition")]
+        public BuffEffectCondition Condition { get; set; }
     }
 
     [Serializable]
@@ -312,6 +333,15 @@ namespace GameLogic.Buffs
 
         [JsonProperty("tags")]
         public List<string> Tags { get; set; } = new List<string>();
+
+        [JsonProperty("applyChance")]
+        public float ApplyChance { get; set; } = 1f;
+
+        [JsonProperty("applyCooldown")]
+        public float ApplyCooldown { get; set; }
+
+        [JsonProperty("requiredStatusEffects")]
+        public List<string> RequiredStatusEffects { get; set; } = new List<string>();
 
         [JsonIgnore]
         public GameplayTagContainer GameplayTags { get; internal set; }

@@ -172,6 +172,11 @@ namespace GameLogic.Buffs
                 return null;
             }
 
+            if (!CheckApplyConditions(template))
+            {
+                return null;
+            }
+
             BuffInstance existing = FindFirstActiveInstance(template.Id, includeAuraProxies: false);
             if (template.StackPolicy == BuffStackPolicy.Independent || existing == null)
             {
@@ -474,7 +479,7 @@ namespace GameLogic.Buffs
                 {
                     instance.NextThinkRemaining -= activeDelta;
                     int safety = 0;
-                    while (instance.NextThinkRemaining <= 0f && !instance.IsRemoved && safety < 10)
+                    while (instance.NextThinkRemaining <= 0f && !instance.IsRemoved && safety < BuffConfig.MaxThinkAttemptsPerTick)
                     {
                         _world.ExecuteActions(instance, BuffEffectTrigger.OnIntervalThink, this);
                         instance.NextThinkRemaining += instance.Template.ThinkInterval;
@@ -530,6 +535,76 @@ namespace GameLogic.Buffs
             }
 
             _activeBuffIndex.Clear();
+        }
+
+        public BuffUnitSaveData SaveState()
+        {
+            BuffUnitSaveData saveData = new BuffUnitSaveData
+            {
+                unitId = Id,
+                currentHp = CurrentHp,
+                currentMana = CurrentMana,
+                primaryAttribute = PrimaryAttribute,
+                teamId = TeamId,
+            };
+
+            for (int index = 0; index < _activeBuffs.Count; index++)
+            {
+                BuffInstance instance = _activeBuffs[index];
+                if (instance.IsRemoved)
+                {
+                    continue;
+                }
+
+                saveData.buffs.Add(new BuffInstanceSaveData
+                {
+                    templateId = instance.Template.Id,
+                    remainingDuration = instance.RemainingDuration,
+                    nextThinkRemaining = instance.NextThinkRemaining,
+                    stacks = instance.Stacks,
+                    isAuraProxy = instance.IsAuraProxy,
+                    auraSourceInstanceId = instance.AuraSourceInstanceId ?? string.Empty,
+                });
+            }
+
+            return saveData;
+        }
+
+        public void LoadState(BuffUnitSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            Clear(BuffRemovalReason.Manual);
+            CurrentHp = saveData.currentHp;
+            CurrentMana = saveData.currentMana;
+            PrimaryAttribute = saveData.primaryAttribute;
+            TeamId = saveData.teamId;
+
+            for (int index = 0; index < saveData.buffs.Count; index++)
+            {
+                BuffInstanceSaveData buffSave = saveData.buffs[index];
+                if (!_world.Database.TryGet(buffSave.templateId, out BuffTemplate template))
+                {
+                    continue;
+                }
+
+                BuffInstance instance = CreateInstance(
+                    template,
+                    this,
+                    buffSave.remainingDuration,
+                    buffSave.isAuraProxy,
+                    buffSave.auraSourceInstanceId,
+                    false);
+
+                instance.RemainingDuration = buffSave.remainingDuration;
+                instance.NextThinkRemaining = buffSave.nextThinkRemaining;
+                instance.Stacks = Math.Max(1, buffSave.stacks);
+            }
+
+            ClampResources();
         }
 
         private float CalculateDerivedAttribute(string attributeType)
@@ -729,10 +804,32 @@ namespace GameLogic.Buffs
             float duration = Math.Max(0f, template.Duration);
             if (template.AffectedByStatusResistance)
             {
-                duration *= 1f - NormalizeRatio(GetAttribute(CombatAttributeNames.StatusResistance), 0.95f);
+                duration *= 1f - NormalizeRatio(GetAttribute(CombatAttributeNames.StatusResistance), BuffConfig.StatusResistanceCap);
             }
 
             return duration;
+        }
+
+        private bool CheckApplyConditions(BuffTemplate template)
+        {
+            if (template.ApplyChance < 1f)
+            {
+                float roll = UnityEngine.Random.value;
+                if (roll > template.ApplyChance)
+                {
+                    return false;
+                }
+            }
+
+            for (int index = 0; index < template.RequiredStatusEffects.Count; index++)
+            {
+                if (!HasStatusEffect(template.RequiredStatusEffects[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private BuffInstance FindFirstActiveInstance(string templateId, bool includeAuraProxies)
