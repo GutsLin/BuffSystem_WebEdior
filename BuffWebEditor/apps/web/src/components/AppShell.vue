@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
+const gameUrl = computed(() => {
+  const { protocol, hostname } = window.location;
+  return `${protocol}//${hostname}:3001`;
+});
 const navigation = [
   { to: '/demo', label: '演示', icon: 'play-circle-o' },
   { to: '/buffs', label: '效果', icon: 'cluster-o' },
@@ -34,6 +39,16 @@ const navigation = [
           <span>{{ item.label }}</span>
         </RouterLink>
       </nav>
+
+      <div class="sidebar-note">
+        <span class="online-dot game-dot" />
+        <div>
+          <strong>源能狂潮</strong>
+          <small>
+            <a :href="gameUrl" target="_self">🎮 打开游戏</a>
+          </small>
+        </div>
+      </div>
 
       <div class="sidebar-note">
         <span class="online-dot" />

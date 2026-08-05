@@ -15,12 +15,7 @@ const router = createRouter({
     { path: '/buffs', name: 'buffs', component: BuffListView, meta: { title: '效果列表' } },
     { path: '/buffs/new', name: 'buff-new', component: BuffEditorView, meta: { title: '新建效果' } },
     { path: '/buffs/:id', name: 'buff-edit', component: BuffEditorView, meta: { title: '编辑效果' } },
-    {
-      path: '/attributes',
-      name: 'attributes',
-      component: AttributeSettingsView,
-      meta: { title: '三维公式' },
-    },
+    { path: '/attributes', name: 'attributes', component: AttributeSettingsView, meta: { title: '三维公式' } },
     { path: '/ai-generate', name: 'ai-generate', component: AiGenerateView, meta: { title: 'AI 生成' } },
     { path: '/export', name: 'export', component: ExportView, meta: { title: 'Unity 导出' } },
     { path: '/gameplay-tags', name: 'gameplay-tags', component: GameplayTagsView, meta: { title: 'GameplayTags' } },

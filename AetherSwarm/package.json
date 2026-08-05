@@ -1,0 +1,13 @@
+{
+  "name": "aether-swarm",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:game\" \"npm run dev:server\"",
+    "dev:game": "npm -w packages/game run dev",
+    "dev:server": "npm -w packages/server run dev",
+    "build": "npm -w packages/game run build && npm -w packages/server run build",
+    "start": "npm -w packages/server run start"
+  },
+  "workspaces": ["packages/*"]
+}
