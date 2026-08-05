@@ -298,8 +298,10 @@ export class AiService {
 6. effectActions 的 trigger 要与描述中的触发时机匹配（如"每秒造成伤害"-> 周期触发 OnIntervalThink，"创建时造成伤害"-> OnCreated）。
 7. attributeModifiers 用于描述持续性的属性修改，effectActions 的 ModifyAttribute 用于瞬时修改。
 8. **重要**：光环效果（isAura=true）的 effectActions 必须使用 targetSelector: "AuraTargets"，让效果作用于光环范围内的单位，而不是光环持有者自身。
-9. **重要**：光环减益（aura debuff）的 attributeModifiers 中，降低属性使用 op: "Add" 配合负值（如 value: -15 表示降低15点），或 op: "PercentAdd" 配合负值（如 value: -15 表示降低15%）。
-10. **重要**：如果描述中提到"每秒"、"每X秒"触发，thinkInterval 要设为对应值，effectActions 的 trigger 用 "OnIntervalThink"。
-11. **重要**：如果描述中光环是"对敌军"、"对友军"作用，isAura 设为 true，effectActions 用 targetSelector: "AuraTargets"；如果是"自身光环"影响自己，用 targetSelector: "Self"。`;
+9. **重要**：降低属性用 op: "Add" 配合负整数（如护甲 -12 表示降低 12 点护甲）。
+10. **重要**：百分比类属性（MagicResistance / StatusResistance / Evasion / CritChance / CritDamage / SpellAmplification / CooldownReduction）在系统中是小数存储（0.15=15%），降低时用 op: "Add" 配合负小数（如降低 15% 魔抗 -> op: "Add", value: -0.15）。不要用 PercentAdd 修改这些属性。
+11. **重要**：整数类属性（Strength / Agility / Intelligence / MaxHp / HpRegen / MaxMana / ManaRegen / AttackDamage / AttackSpeed / Armor / MoveSpeed / AttackRange）降低时直接用 op: "Add" + 负整数（如降低 12 点护甲 -> op: "Add", value: -12）。
+12. **重要**：如果描述中提到"每秒"、"每X秒"触发，thinkInterval 要设为对应值，effectActions 的 trigger 用 "OnIntervalThink"。
+13. **重要**：如果描述中光环是"对敌军"、"对友军"作用，isAura 设为 true，effectActions 用 targetSelector: "AuraTargets"；如果是"自身光环"影响自己，用 targetSelector: "Self"。`;
   }
 }
