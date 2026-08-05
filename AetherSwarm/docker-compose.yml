@@ -6,7 +6,7 @@ services:
     container_name: aetherswarm-game
     restart: unless-stopped
     ports:
-      - "${GAME_PORT:-3001}:3001"
+      - "${GAME_PORT:-3002}:3001"
     environment:
       PORT: 3001
     volumes:

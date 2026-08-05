@@ -51,13 +51,13 @@ export class Game {
     heroType: 'Strength',
   };
 
-  private gameContainer: Container;
-  private uiContainer: Container;
-  private waveText: Text;
-  private xpBar: Graphics;
-  private hpBar: Graphics;
-  private timerText: Text;
-  private killText: Text;
+  private gameContainer!: Container;
+  private uiContainer!: Container;
+  private waveText!: Text;
+  private xpBar!: Graphics;
+  private hpBar!: Graphics;
+  private timerText!: Text;
+  private killText!: Text;
   private keys: Set<string> = new Set();
 
   constructor(canvas: HTMLCanvasElement, heroType: HeroType) {

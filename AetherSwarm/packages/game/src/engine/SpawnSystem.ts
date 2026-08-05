@@ -1,5 +1,5 @@
 import type { Hero } from './Hero';
-import type { Enemy, EnemyType } from './Enemy';
+import { Enemy, type EnemyType } from './Enemy';
 import type { Projectile } from './Projectile';
 import type { GameState } from './Game';
 import { Container } from 'pixi.js';

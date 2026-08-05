@@ -96,7 +96,7 @@ onBeforeUnmount(() => { game?.destroy(); window.removeEventListener('game-over',
         </div>
       </div>
       <div class="menu-actions">
-        <button class="start-btn" :disabled="!playerName.value.trim()" @click="startGame">开始游戏</button>
+        <button class="start-btn" :disabled="!playerName.trim()" @click="startGame">开始游戏</button>
         <button class="lb-btn" @click="loadLeaderboard">🏆 排行榜</button>
       </div>
     </div>

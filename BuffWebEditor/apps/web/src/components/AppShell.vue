@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const gameUrl = computed(() => {
   const { protocol, hostname } = window.location;
-  return `${protocol}//${hostname}:3001`;
+  return `${protocol}//${hostname}:3002`;
 });
 const navigation = [
   { to: '/demo', label: '演示', icon: 'play-circle-o' },

@@ -5,8 +5,6 @@ export class Hero {
   body: Graphics;
   hp: number;
   maxHp: number;
-  x: number;
-  y: number;
   targetX?: number;
   targetY?: number;
 
@@ -14,8 +12,6 @@ export class Hero {
     this.container = container;
     this.hp = 100;
     this.maxHp = 100;
-    this.x = 0;
-    this.y = 0;
 
     this.body = new Graphics();
     this.drawBody();
